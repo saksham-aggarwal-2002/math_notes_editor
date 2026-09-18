@@ -359,21 +359,39 @@ loadNotebook();
 -------------------------------------------------- */
 
 document.addEventListener("keydown",event=>{
-
-    if(
-        event.metaKey &&
-        event.shiftKey &&
-        event.key.toLowerCase()==="l"
-    ){
-
+    if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="l"){
         event.preventDefault();
-
         openAIPrompt();
-
     }
 
+    if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="p"){
+        event.preventDefault();
+        insertPlaceholder();
+    }
 });
 
+function insertPlaceholder(){
+
+    const placeholder=`::: {.box}
+
+[content describing the placeholder]{style="color: red;"}.
+
+:::` + "\n";
+
+    const cursor=editor.getCursor();
+
+    editor.replaceRange(
+        placeholder,
+        cursor
+    );
+
+    editor.setCursor({
+        line:cursor.line+2,
+        ch:1
+    });
+
+    editor.focus();
+}
 
 /* --------------------------------------------------
    AI prompt

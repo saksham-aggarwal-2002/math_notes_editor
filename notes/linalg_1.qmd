@@ -489,6 +489,11 @@ Let $T:V\to V$ be linear. A scalar $\lambda\in F$ is an eigenvalue of $T$ if the
 This way I can continue to write while hte AI content is being generated. 
 
 
+::: {.box}
+
+[Placeholder]{style="color: red;"}.
+
+:::
 
 
 
