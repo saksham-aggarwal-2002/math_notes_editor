@@ -95,6 +95,8 @@ window.Quarto = {
 
 
 <p>The goal here is to develop an algebraic theory for linear maps.</p>
+<section id="vector-spaces-and-linear-maps" class="level1">
+<h1>Vector Spaces and Linear Maps</h1>
 <p>Vector space algebra codifes the flat “arrow” behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.</p>
 <div class="box definition">
 <p><strong>(Vector Space)</strong></p>
@@ -146,6 +148,7 @@ window.Quarto = {
 <div class="box">
 <p><span style="color: red;">visualise ker and image spaces of matrix</span></p>
 </div>
+</section>
 <section id="generating-sets" class="level1">
 <h1>Generating Sets</h1>
 <section id="basis-and-dimension" class="level2">
@@ -236,18 +239,18 @@ v=\sum_{i=1}^n a_i v_i.
 <p><strong>(Matrix Representation)</strong></p>
 <p>Let <span class="math inline">\(T:V\to W\)</span> be linear, with <span class="math inline">\(B=\{v_1,\dots,v_n\}\)</span> a basis of <span class="math inline">\(V\)</span> and <span class="math inline">\(C=\{w_1,\dots,w_m\}\)</span> a basis of <span class="math inline">\(W\)</span>. The matrix of <span class="math inline">\(T\)</span> with respect to <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> is the <span class="math inline">\(m\times n\)</span> matrix <span class="math inline">\([T]_{C\leftarrow B}\in F^{m\times n}\)</span> whose <span class="math inline">\(j\)</span>-th column is the coordinate vector <span class="math inline">\([T(v_j)]_C\)</span>:</p>
 <p><span class="math display">\[
-[T]_{C\leftarrow B}
-=
-\begin{pmatrix}
-\vert &amp; &amp; \vert \\
-[T(v_1)]_C &amp; \cdots &amp; [T(v_n)]_C \\
-\vert &amp; &amp; \vert
-\end{pmatrix}
-\]</span></p>
+  [T]_{C\leftarrow B}
+  =
+  \begin{pmatrix}
+  \vert &amp; &amp; \vert \\
+  [T(v_1)]_C &amp; \cdots &amp; [T(v_n)]_C \\
+  \vert &amp; &amp; \vert
+  \end{pmatrix}
+  \]</span></p>
 <p>For all <span class="math inline">\(v\in V\)</span> the matrix satisfies:</p>
 <p><span class="math display">\[
-[T]_{C\leftarrow B}\,[v]_B = [T(v)]_C
-\]</span></p>
+  [T]_{C\leftarrow B}\,[v]_B = [T(v)]_C
+  \]</span></p>
 </div>
 <div class="box theorem">
 <p><strong>(Matrix Operations Encode Linear Map Operations)</strong></p>

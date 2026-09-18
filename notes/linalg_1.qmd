@@ -7,6 +7,7 @@ format:
 
 The goal here is to develop an algebraic theory for linear maps. 
 
+# Vector Spaces and Linear Maps
 Vector space algebra codifes the flat "arrow" behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.
 
 ::: {.box .definition}
@@ -204,21 +205,21 @@ $$
 
 Let $T:V\to W$ be linear, with $B=\{v_1,\dots,v_n\}$ a basis of $V$ and $C=\{w_1,\dots,w_m\}$ a basis of $W$. The matrix of $T$ with respect to $B$ and $C$ is the $m\times n$ matrix $[T]_{C\leftarrow B}\in F^{m\times n}$ whose $j$-th column is the coordinate vector $[T(v_j)]_C$:
 
-$$
-[T]_{C\leftarrow B}
-=
-\begin{pmatrix}
-\vert & & \vert \\
-[T(v_1)]_C & \cdots & [T(v_n)]_C \\
-\vert & & \vert
-\end{pmatrix}
-$$
+  $$
+  [T]_{C\leftarrow B}
+  =
+  \begin{pmatrix}
+  \vert & & \vert \\
+  [T(v_1)]_C & \cdots & [T(v_n)]_C \\
+  \vert & & \vert
+  \end{pmatrix}
+  $$
 
-For all $v\in V$ the matrix satisfies:
+  For all $v\in V$ the matrix satisfies:
 
-$$
-[T]_{C\leftarrow B}\,[v]_B = [T(v)]_C
-$$
+  $$
+  [T]_{C\leftarrow B}\,[v]_B = [T(v)]_C
+  $$
 
 
 :::
@@ -477,7 +478,6 @@ Worked example and process of diagonalization.
 
 
 
-
 ::: {.box .definition}
 
 **(Eigenvalue)**
@@ -487,6 +487,15 @@ Let $T:V\to V$ be linear. A scalar $\lambda\in F$ is an eigenvalue of $T$ if the
 :::
 
 This way I can continue to write while hte AI content is being generated. 
+
+
+
+
+
+
+
+
+
 
 
 
