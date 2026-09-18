@@ -20,7 +20,6 @@ app = FastAPI()
 app.mount("/notes", StaticFiles(directory="notes"), name="notes")
 app.mount("/styles", StaticFiles(directory="styles"), name="styles")
 
-
 QMD_FILE = "notes/linalg_1.qmd"
 HTML_FILE = "notes/linalg_1.html"
 
@@ -85,6 +84,9 @@ class NotebookUpdate(BaseModel):
 def home():
     return FileResponse("index.html")
 
+@app.get("/config")
+def config():
+    return {"jupyter_port": JUPYTER_PORT}
 
 @app.get("/notebook")
 def notebook():

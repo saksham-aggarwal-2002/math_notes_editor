@@ -2,822 +2,230 @@
 
 <html>
 <head>
-<title>MathAI</title>
+<title>My Learning AI</title>
 <meta charset="UTF-8">
 
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.css">
-
 <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/markdown/markdown.js"></script>
 
-<!-- CodeMirror folding -->
-
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldcode.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldgutter.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/markdown-fold.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldgutter.css">
-
 <style>
-body{
-    margin:0;
-    font-family:sans-serif;
-    height:100vh;
-    overflow:hidden
-}
-
-#app{
-    display:flex;
-    height:100vh
-}
-
-#editor-panel{
-    width:50%;
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    border-right:1px solid #ddd
-}
-
-#editor-header{
-    padding:12px 16px;
-    border-bottom:1px solid #ddd;
-    font-weight:bold
-}
-
-#editor{
-    flex:1
-}
-
-.CodeMirror{
-    height:100%;
-    font-family:monospace;
-    font-size:15px
-}
-
-.CodeMirror-foldgutter{
-    width:16px
-}
-
-.CodeMirror-foldgutter-open,
-.CodeMirror-foldgutter-folded{
-    cursor:pointer
-}
-
-#quarto-panel{
-    width:50%;
-    height:100%
-}
-
-#quarto-frame{
-    width:100%;
-    height:100%;
-    border:none
-}
-
-#ai-prompt{
-    position:fixed;
-    top:30%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:500px;
-    background:white;
-    border:1px solid #ccc;
-    border-radius:6px;
-    padding:20px;
-    box-shadow:0 5px 30px rgba(0,0,0,.2);
-    display:none;
-    z-index:1000
-}
-
-#ai-request{
-    width:100%;
-    box-sizing:border-box;
-    padding:10px;
-    font-family:sans-serif;
-    font-size:16px;
-    resize:vertical
-}
-
-#reference-fields{
-    display:none;
-}
-
-.reference-row{
-    display:flex;
-    align-items:center;
-    margin-bottom:12px;
-}
-
-.reference-row label{
-    width:70px;
-    font-family:monospace;
-    font-size:16px;
-}
-
-.reference-row input{
-    flex:1;
-    box-sizing:border-box;
-    padding:10px;
-    font-family:monospace;
-    font-size:16px;
-    border:1px solid #ccc;
-    border-radius:4px;
-}
-
-.tag-input{
-    flex:1;
-    display:flex;
-    align-items:center;
-    border:1px solid #ccc;
-    border-radius:4px;
-    overflow:hidden;
-}
-
-.tag-input span{
-    padding-left:10px;
-    font-family:monospace;
-    font-size:16px;
-    color:#777;
-}
-
-.tag-input input{
-    border:none;
-    outline:none;
-    padding:10px;
-    width:100%;
-}
+body{margin:0;font-family:sans-serif;height:100vh;overflow:hidden}
+#toolbar{height:45px;display:flex;align-items:center;border-bottom:1px solid #ddd;padding:0 12px;box-sizing:border-box}
+.toggle{padding:6px 12px;border:1px solid #ccc;background:white;cursor:pointer}
+.toggle.active{background:#eee}
+#app{height:calc(100vh - 45px)}
+#notes-view{display:flex;height:100%}
+#editor-panel{width:50%;height:100%;display:flex;flex-direction:column;border-right:1px solid #ddd}
+#editor-header{padding:12px 16px;border-bottom:1px solid #ddd;font-weight:bold}
+#editor{flex:1}
+.CodeMirror{height:100%;font-family:monospace;font-size:15px}
+#quarto-panel{width:50%;height:100%}
+#quarto-frame{width:100%;height:100%;border:none}
+#python-view{width:100%;height:100%;display:none}
+#jupyter-frame{width:100%;height:100%;border:none}
+#ai-prompt{position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);width:500px;background:white;border:1px solid #ccc;border-radius:6px;padding:20px;box-shadow:0 5px 30px rgba(0,0,0,.2);display:none;z-index:1000}
+#ai-request{width:100%;box-sizing:border-box;padding:10px;font-family:sans-serif;font-size:16px;resize:vertical}
 </style>
 
 </head>
 
 <body>
 
-<div id="app">
-
-<div id="editor-panel">
-
-    <div id="editor-header">
-        linalg_1.qmd
-    </div>
-
-    <textarea id="editor"></textarea>
-
+<div id="toolbar">
+    <button class="toggle active" id="notes-button">Notes</button>
+    <button class="toggle" id="python-button">Python</button>
 </div>
 
-<div id="quarto-panel">
-    <iframe id="quarto-frame"></iframe>
+<div id="app">
+
+
+<div id="notes-view">
+    <div id="editor-panel">
+        <div id="editor-header">linalg_1.qmd</div>
+        <textarea id="editor"></textarea>
+    </div>
+
+    <div id="quarto-panel">
+        <iframe id="quarto-frame"></iframe>
+    </div>
+</div>
+
+<div id="python-view">
+    <iframe id="jupyter-frame" src="http://127.0.0.1:8890/lab"></iframe>
 </div>
 
 </div>
 
 <div id="ai-prompt">
-
-    <div id="ai-prompt-content">
-
-        <textarea
-            id="ai-request"
-            rows="4"
-            placeholder="What should I insert?"
-        ></textarea>
-
-        <div id="reference-fields">
-
-            <div class="reference-row">
-                <label for="reference-heading">heading:</label>
-                <input
-                    id="reference-heading"
-                    type="text"
-                    autocomplete="off"
-                >
-            </div>
-
-            <div class="reference-row">
-                <label for="reference-tag">tag:</label>
-                <div class="tag-input">
-                    <span>#</span>
-                    <input
-                        id="reference-tag"
-                        type="text"
-                        autocomplete="off"
-                    >
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
+    <textarea id="ai-request" rows="4" placeholder="What should I insert?"></textarea>
 </div>
 
 <script>
-
 let editor;
 let saveTimer=null;
 let lastQuartoModified=null;
 
-
-/* --------------------------------------------------
-   Initial Quarto preview
--------------------------------------------------- */
-
-document.getElementById("quarto-frame").src=
-    "/notes/linalg_1.html?t="+Date.now();
-
-
-/* --------------------------------------------------
-   Custom Quarto folding
--------------------------------------------------- */
-
-CodeMirror.registerHelper("fold","quarto",function(cm,start){
-
-    const line=start.line;
-    const text=cm.getLine(line);
-
-
-    /*
-       Quarto ::: blocks
-
-       Example:
-
-       ::: {.box .definition}
-
-       content
-
-       :::
-    */
-
-    if(/^\s*:::\s*/.test(text)){
-
-        for(let i=line+1;i<cm.lineCount();i++){
-
-            if(/^\s*:::\s*$/.test(cm.getLine(i))){
-
-                return {
-                    from:CodeMirror.Pos(line,text.length),
-                    to:CodeMirror.Pos(
-                        i,
-                        cm.getLine(i).length
-                    )
-                };
-
-            }
-
-        }
-
-        return;
-    }
-
-
-    /*
-       Markdown headings
-
-       # Heading
-       ## Heading
-       ### Heading
-
-       A heading folds everything until the
-       next heading of the same or higher level.
-    */
-
-    if(/^\s*#{1,6}\s+/.test(text)){
-
-        const match=text.match(/^\s*(#{1,6})\s+/);
-        const headingLevel=match[1].length;
-
-
-        for(let i=line+1;i<cm.lineCount();i++){
-
-            const nextLine=cm.getLine(i);
-
-            const nextMatch=
-                nextLine.match(/^\s*(#{1,6})\s+/);
-
-
-            if(
-                nextMatch &&
-                nextMatch[1].length<=headingLevel
-            ){
-
-                return {
-                    from:CodeMirror.Pos(line,text.length),
-                    to:CodeMirror.Pos(
-                        i-1,
-                        cm.getLine(i-1).length
-                    )
-                };
-
-            }
-
-        }
-
-
-        /*
-           If this is the final heading,
-           fold through the end of the document.
-        */
-
-        return {
-            from:CodeMirror.Pos(line,text.length),
-            to:CodeMirror.Pos(
-                cm.lineCount()-1,
-                cm.getLine(cm.lineCount()-1).length
-            )
-        };
-
-    }
-
-});
-
-
-/* --------------------------------------------------
-   Load notebook
--------------------------------------------------- */
+document.getElementById("quarto-frame").src="/notes/linalg_1.html?t="+Date.now();
 
 async function loadNotebook(){
-
     const response=await fetch("/notebook");
     const data=await response.json();
 
-
     editor=CodeMirror.fromTextArea(
         document.getElementById("editor"),
-        {
-
-            mode:"markdown",
-
-            lineNumbers:true,
-
-            lineWrapping:true,
-
-
-            /*
-               Use our custom folding function.
-
-               This handles BOTH:
-
-               Markdown headings
-               Quarto ::: blocks
-            */
-
-            foldGutter:{
-                rangeFinder:function(cm,start){
-
-                    return CodeMirror.fold.quarto(
-                        cm,
-                        start
-                    );
-
-                }
-            },
-
-
-            gutters:[
-                "CodeMirror-linenumbers",
-                "CodeMirror-foldgutter"
-            ]
-
-        }
+        {mode:"markdown",lineNumbers:true,lineWrapping:true}
     );
 
-
     editor.setValue(data.content);
-    // Collapse all top-level (#) sections
-    for(let i=0; i<editor.lineCount(); i++){
-        if(/^#\s+/.test(editor.getLine(i))){
-        editor.foldCode(CodeMirror.Pos(i, 0));
-        }
-    }
     editor.on("change",saveNotebook);
-
 }
-
-
-/* --------------------------------------------------
-   Save notebook
--------------------------------------------------- */
 
 function saveNotebook(){
-
     clearTimeout(saveTimer);
 
-
     saveTimer=setTimeout(async()=>{
-
         await fetch("/notebook",{
-
             method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-            body:JSON.stringify({
-                content:editor.getValue()
-            })
-
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({content:editor.getValue()})
         });
-
     },500);
-
 }
 
-
 loadNotebook();
-
-
-/* --------------------------------------------------
-   AI shortcut
--------------------------------------------------- */
 
 document.addEventListener("keydown",event=>{
     if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="l"){
         event.preventDefault();
-        openAIPrompt();
-    }
 
-    if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="p"){
-        event.preventDefault();
-        insertPlaceholder();
-    }
-
-    if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="a"){
-        event.preventDefault();
-        addExampleReference();
+        if(document.getElementById("notes-view").style.display!=="none"){
+            openAIPrompt();
+        }
     }
 });
 
-function insertPlaceholder(){
-
-    const placeholder=`::: {.box}
-
-[content describing the placeholder]{style="color: red;"}.
-
-:::` + "\n";
-
-    const cursor=editor.getCursor();
-
-    editor.replaceRange(
-        placeholder,
-        cursor
-    );
-
-    editor.setCursor({
-        line:cursor.line+2,
-        ch:1
-    });
-
-    editor.focus();
-}
-
-function addExampleReference(){
-
-    const prompt=document.getElementById("ai-prompt");
-    const aiRequest=document.getElementById("ai-request");
-    const referenceFields=document.getElementById("reference-fields");
-
-    aiRequest.style.display="none";
-    referenceFields.style.display="block";
-
-    prompt.style.display="block";
-
-    const heading=document.getElementById("reference-heading");
-    const tag=document.getElementById("reference-tag");
-
-    heading.value="";
-    tag.value="";
-
-    heading.focus();
-
-
-    function submitReference(){
-
-        const headingText=heading.value.trim();
-        const tagText=tag.value.trim();
-
-        if(!headingText || !tagText){
-            return;
-        }
-
-        const link=`See [${headingText}](#${tagText})`;
-
-        const cursor=editor.getCursor();
-
-        editor.replaceRange(
-            link,
-            cursor
-        );
-
-        const lastLine=editor.lineCount()-1;
-
-        editor.replaceRange(
-            `\n\n### ${headingText}  {#${tagText}}\n`,
-            CodeMirror.Pos(
-                lastLine,
-                editor.getLine(lastLine).length
-            )
-        );
-
-        closeReferencePrompt();
-
-        editor.focus();
-    }
-
-
-    function handleKey(event){
-
-        if(event.key==="Enter"){
-            event.preventDefault();
-            submitReference();
-        }
-
-        if(event.key==="Escape"){
-            event.preventDefault();
-            closeReferencePrompt();
-        }
-    }
-
-
-    heading.onkeydown=handleKey;
-    tag.onkeydown=handleKey;
-
-}
-
-
-function closeReferencePrompt(){
-
-    document.getElementById("ai-prompt").style.display="none";
-
-    document.getElementById("reference-fields").style.display="none";
-
-    document.getElementById("ai-request").style.display="block";
-}
-
-
-
-/* --------------------------------------------------
-   AI prompt
--------------------------------------------------- */
-
 function openAIPrompt(){
-
-    const prompt=
-        document.getElementById("ai-prompt");
-
+    const prompt=document.getElementById("ai-prompt");
     prompt.style.display="block";
 
-
-    const input=
-        document.getElementById("ai-request");
-
+    const input=document.getElementById("ai-request");
     input.value="";
-
     input.focus();
-
 }
-
 
 function closeAIPrompt(){
     document.getElementById("ai-prompt").style.display="none";
-    document.getElementById("reference-fields").style.display="none";
-    document.getElementById("ai-request").style.display="block";
 }
 
-
-document.getElementById("ai-request")
-.addEventListener("keydown",event=>{
-
-    if(
-        event.key==="Enter" &&
-        !event.shiftKey
-    ){
-
+document.getElementById("ai-request").addEventListener("keydown",event=>{
+    if(event.key==="Enter"&&!event.shiftKey){
         event.preventDefault();
-
         generateAtCursor();
-
     }
-
 
     if(event.key==="Escape"){
-
         closeAIPrompt();
-
     }
-
 });
 
-
-/* --------------------------------------------------
-   AI generation
--------------------------------------------------- */
-
 async function generateAtCursor(){
-
-    const request=
-        document.getElementById("ai-request")
-        .value.trim();
-
-
+    const request=document.getElementById("ai-request").value.trim();
     if(!request)return;
 
-
     const marker="<!-- AI_GENERATING -->";
-
     const cursor=editor.getCursor();
 
-
-    editor.replaceRange(
-        marker,
-        cursor
-    );
-
-
+    editor.replaceRange(marker,cursor);
     closeAIPrompt();
-
     editor.focus();
 
-
     try{
+        const response=await fetch("/ai/generate",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({message:request})
+        });
 
-        const response=await fetch(
-            "/ai/generate",
-            {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-                    message:request
-                })
-
-            }
-        );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                "AI request failed."
-            );
-
-        }
-
+        if(!response.ok)throw new Error("AI request failed.");
 
         const data=await response.json();
 
-
         const text=editor.getValue();
-
-        const markerIndex=
-            text.indexOf(marker);
-
+        const markerIndex=text.indexOf(marker);
 
         if(markerIndex===-1){
-
-            alert(
-                "Could not find the AI insertion point."
-            );
-
+            alert("Could not find the AI insertion point.");
             return;
-
         }
 
+        const from=editor.posFromIndex(markerIndex);
+        const to=editor.posFromIndex(markerIndex+marker.length);
 
-        const from=
-            editor.posFromIndex(markerIndex);
-
-
-        const to=
-            editor.posFromIndex(
-                markerIndex+marker.length
-            );
-
-
-        editor.replaceRange(
-            data.content,
-            from,
-            to
-        );
-
+        editor.replaceRange(data.content,from,to);
 
     }catch(error){
-
         alert("AI generation failed.");
-
     }
-
 }
 
-
-/* --------------------------------------------------
-   Quarto preview refresh
--------------------------------------------------- */
-
 async function checkQuarto(){
-
     try{
-
-        const response=
-            await fetch("/quarto-version");
-
-        const data=
-            await response.json();
-
+        const response=await fetch("/quarto-version");
+        const data=await response.json();
 
         if(lastQuartoModified===null){
-
-            lastQuartoModified=
-                data.modified;
-
+            lastQuartoModified=data.modified;
             return;
-
         }
 
+        if(data.modified!==lastQuartoModified){
+            lastQuartoModified=data.modified;
 
-        if(
-            data.modified !==
-            lastQuartoModified
-        ){
-
-            lastQuartoModified=
-                data.modified;
-
-
-            const frame=
-                document.getElementById(
-                    "quarto-frame"
-                );
-
+            const frame=document.getElementById("quarto-frame");
 
             let scrollX=0;
             let scrollY=0;
 
-
             try{
+                scrollX=frame.contentWindow.scrollX;
+                scrollY=frame.contentWindow.scrollY;
+            }catch(error){}
 
-                scrollX=
-                    frame.contentWindow.scrollX;
-
-                scrollY=
-                    frame.contentWindow.scrollY;
-
-            }catch(error){
-
-                console.log(
-                    "Could not read preview scroll position."
-                );
-
-            }
-
-
-            frame.src=
-                "/notes/linalg_1.html?t="+Date.now();
-
+            frame.src="/notes/linalg_1.html?t="+Date.now();
 
             frame.onload=()=>{
-
                 try{
-
-                    frame.contentWindow.scrollTo(
-                        scrollX,
-                        scrollY
-                    );
-
-                }catch(error){
-
-                    console.log(
-                        "Could not restore preview scroll position."
-                    );
-
-                }
-
+                    frame.contentWindow.scrollTo(scrollX,scrollY);
+                }catch(error){}
             };
-
         }
-
-
-    }catch(error){
-
-        console.log(
-            "Could not check Quarto status."
-        );
-
-    }
-
+    }catch(error){}
 }
 
+setInterval(checkQuarto,1000);
 
-setInterval(
-    checkQuarto,
-    1000
-);
+function showNotes(){
+    document.getElementById("notes-view").style.display="flex";
+    document.getElementById("python-view").style.display="none";
+
+    document.getElementById("notes-button").classList.add("active");
+    document.getElementById("python-button").classList.remove("active");
+
+    editor.refresh();
+}
+
+function showPython(){
+    document.getElementById("notes-view").style.display="none";
+    document.getElementById("python-view").style.display="block";
+
+    document.getElementById("notes-button").classList.remove("active");
+    document.getElementById("python-button").classList.add("active");
+}
+
+document.getElementById("notes-button").addEventListener("click",showNotes);
+document.getElementById("python-button").addEventListener("click",showPython);
 
 </script>
 
