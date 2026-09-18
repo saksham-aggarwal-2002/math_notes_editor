@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Linear Algebra</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="linalg_1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="linalg_1_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="linalg_1_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="linalg_1_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="linalg_1_files/libs/quarto-html/popper.min.js"></script>
+<script src="linalg_1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="linalg_1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="linalg_1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="linalg_1_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="linalg_1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="linalg_1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="linalg_1_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles/quarto.css">
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Linear Algebra</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The goal here is to develop an algebraic theory for linear maps.</p>
+<p>Vector space algebra codifes the flat “arrow” behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.</p>
+<div class="box definition">
+<p><strong>(Vector Space)</strong></p>
+<p>A vector space is a quadruple <span class="math inline">\((V,F,+,\cdot)\)</span> where:</p>
+<ul>
+<li><span class="math inline">\((V,+)\)</span> is an abelian group</li>
+<li><span class="math inline">\((F,+,\cdot)\)</span> is a field</li>
+<li><span class="math inline">\(\cdot:F\times V\to V\)</span> is scalar multiplication satisfying, for all <span class="math inline">\(a,b\in F\)</span> and <span class="math inline">\(u,v\in V\)</span>:
+<ul>
+<li><span class="math inline">\(a(u+v)=au+av\)</span> (Distributive over vectors)</li>
+<li><span class="math inline">\((a+b)v=av+bv\)</span> (Distributive over scalars)</li>
+<li><span class="math inline">\((ab)v=a(bv)\)</span> (Associativity)</li>
+<li><span class="math inline">\(1v=v\)</span> (Identity)</li>
+</ul></li>
+</ul>
+</div>
+<p>The maps which preserve the above structure are exactly the linear maps. The algebraic conditions are meant to encode the “linearity” between inputs and outputs, if we scale and add (linear combination) input vectors, then a linear map preserves those operations (same linear combination) on the output vectors.</p>
+<div class="box definition">
+<p><strong>(Linear Map)</strong></p>
+<p>Let <span class="math inline">\(V,W\)</span> be vector spaces over <span class="math inline">\(F\)</span>. A map <span class="math inline">\(T:V\to W\)</span> is linear if, for all <span class="math inline">\(u,v\in V\)</span> and <span class="math inline">\(a\in F\)</span>,</p>
+<ul>
+<li><span class="math inline">\(T(u+v)=T(u)+T(v)\)</span> (respects vector addition)</li>
+<li><span class="math inline">\(T(av)=aT(v)\)</span> (respects scalar multiplication)</li>
+</ul>
+</div>
+<p>Next common algebraic motif is to consider vector subspaces:</p>
+<div class="box definition">
+<p><strong>(Vector Subspace)</strong> For a vector space <span class="math inline">\(V\)</span>, a subset <span class="math inline">\(U\subseteq V\)</span> is a vector subspace if <span class="math inline">\(U\)</span> is itself a vector space under the operations inherited from <span class="math inline">\(V\)</span>. Equivalently, <span class="math inline">\(U\)</span> is a subspace iff:</p>
+<ul>
+<li><span class="math inline">\(0\in U\)</span> (0 vector is in subspace)</li>
+<li><span class="math inline">\(u,v\in U \implies u+v\in U\)</span> (Closed under addition)</li>
+<li><span class="math inline">\(a\in F,\ u\in U \implies au\in U\)</span> (Closed under scalar multiplication)</li>
+</ul>
+</div>
+<p>Vector subspaces in <span class="math inline">\(\mathbb{R}^n\)</span> are easy to understand as all lower-dimensional hyperplanes through the origin:</p>
+<div class="text-center">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Linear_subspaces_with_shading.svg" class="img-fluid"></p>
+</div>
+<p>A linear map creates two important vector subspaces in the domain and co-domain:</p>
+<div class="box definition">
+<p><strong>(Kernel and Image)</strong></p>
+<p>Let <span class="math inline">\(T:V\to W\)</span> be a linear map.</p>
+<ul>
+<li><strong>Kernel:</strong> <span class="math inline">\(\ker T=\{v\in V:T(v)=0\}\subseteq V\)</span></li>
+<li><strong>Image:</strong> <span class="math inline">\(\operatorname{im}T=\{T(v):v\in V\}\subseteq W\)</span></li>
+</ul>
+<p><span class="math inline">\(\ker T\)</span> is a subspace of <span class="math inline">\(V\)</span> and <span class="math inline">\(\operatorname{im}T\)</span> is a subspace of <span class="math inline">\(W\)</span>.</p>
+</div>
+<div class="box">
+<p><span style="color: red;">visualise ker and image spaces of matrix</span></p>
+</div>
+<section id="generating-sets" class="level1">
+<h1>Generating Sets</h1>
+<section id="basis-and-dimension" class="level2">
+<h2 class="anchored" data-anchor-id="basis-and-dimension">Basis and Dimension</h2>
+<p>As is a common motif in the study of algebraic structures, we ask if there is a smaller set that can generate the whole space. This leads us to the following definitions:</p>
+<div class="box definition">
+<p><strong>(Span and Linear Independence)</strong></p>
+<ul>
+<li><p><strong>Span:</strong> The set of all linear combinations of a set of vectors <span class="math inline">\(S\)</span>: <span class="math display">\[\operatorname{span}(S)=\left\{\sum_{i=1}^k a_i v_i : a_i\in F,\ v_i\in S\right\}.\]</span></p></li>
+<li><p><strong>Linear independence:</strong> A set of vectors is linearly independent if no vector in the set can be written as a linear combination of the others. Equivalently if the following holds: <span class="math display">\[\sum_{i=1}^n a_i v_i=0 \implies a_1=\cdots=a_n=0\]</span> See <a href="#lin_ind_intuition">Intuition</a></p></li>
+</ul>
+</div>
+<div class="box">
+<p><span style="color: red;">visualisation of span and L.I</span></p>
+</div>
+<p>So a spanning set is just a generating set and a linearly independent set doesn’t have any redundancy. Taking a set that is spanning and linearly independent gives us the basis:</p>
+<div class="box definition">
+<p><strong>(Basis and Dimension)</strong></p>
+<ul>
+<li>A linearly independent spanning set of <span class="math inline">\(V\)</span> is called a basis</li>
+<li>If <span class="math inline">\(B\)</span> is a basis for vector space <span class="math inline">\(V\)</span> then <span class="math inline">\(\dim(V)=|B|\)</span>
+<ul>
+<li>Well-defined since any two bases of a vector space can be shown to have same cardinality</li>
+<li><span class="math inline">\(V\)</span> is said to have infinite dimension if it has no finite basis</li>
+</ul></li>
+</ul>
+</div>
+<p>Hence, the basis is not unique but the dimension is:</p>
+<div class="box">
+<p><span style="color: red;">R2 with difference basis vector sets but same dimension</span></p>
+</div>
+<p>In fact, it can be shown that any two vector spaces with the same dimension are isomorphic.</p>
+<div class="box theorem">
+<p><strong>(Isomorphism and Dimension)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> be vector spaces over the same field. If <span class="math display">\[
+\dim(V)=\dim(W),
+\]</span> then <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> are isomorphic.</p>
+</div>
+</section>
+<section id="some-useful-results" class="level2">
+<h2 class="anchored" data-anchor-id="some-useful-results">Some Useful Results</h2>
+<p>Some useful results relating to above ideas include:</p>
+<div class="box theorem">
+<p><strong>(Dimension of Quotient Space)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be a finite-dimensional vector space and <span class="math inline">\(U\subseteq V\)</span> a subspace. If <span class="math inline">\(\dim V=n\)</span> and <span class="math inline">\(\dim U=m\)</span> then</p>
+<p><span class="math display">\[
+\dim(V/U)=\dim V-\dim U = n-m
+\]</span></p>
+</div>
+<div class="box theorem">
+<p><strong>(Rank-Nullity Theorem)</strong></p>
+<p>Let <span class="math inline">\(T:V\to W\)</span> be linear with <span class="math inline">\(V\)</span> finite-dimensional Then</p>
+<p><span class="math display">\[
+\dim V = \underbrace{\dim\ker T}_{\text{nullity}} + \underbrace{\dim\operatorname{im}T}_{\text{rank}}
+\]</span></p>
+</div>
+<div class="box theorem">
+<p><strong>(Injectivity and Surjectivity Characterisations)</strong></p>
+<p>Let <span class="math inline">\(T:V\to W\)</span> be linear.</p>
+<ul>
+<li><span class="math inline">\(T\)</span> is injective iff <span class="math inline">\(\ker T=\{0\}\)</span></li>
+<li><span class="math inline">\(T\)</span> is surjective iff <span class="math inline">\(\operatorname{im}T=W\)</span></li>
+</ul>
+<p>If <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> are finite-dimensional:</p>
+<ul>
+<li><span class="math inline">\(T\)</span> is injective iff <span class="math inline">\(\operatorname{nullity}(T)=0\)</span></li>
+<li><span class="math inline">\(T\)</span> is surjective iff <span class="math inline">\(\operatorname{rank}(T)=\dim W\)</span></li>
+<li><span class="math inline">\(T\)</span> is injective iff <span class="math inline">\(T\)</span> is surjective iff <span class="math inline">\(T\)</span> is bijective (assuming dim <span class="math inline">\(V\)</span> = dim <span class="math inline">\(W\)</span>)</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="finite-dimensional-coordinate-system" class="level1">
+<h1>Finite-Dimensional Coordinate System</h1>
+<p>Suppose we have a finite dimensional vector space. So we’ve found a finite set of vectors which generate the whole space (summarises the algebraic structure). Hence, given a basis, we can define a coordinate system as an orientation to that generating system.</p>
+<div class="box definition">
+<p><strong>(Coordinate Vector Representation)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space over <span class="math inline">\(F\)</span> and let <span class="math inline">\(B=\{v_1,\dots,v_n\}\)</span> be a basis of <span class="math inline">\(V\)</span>. Every <span class="math inline">\(v\in V\)</span> can be written uniquely as</p>
+<p><span class="math display">\[
+v=\sum_{i=1}^n a_i v_i.
+\]</span></p>
+<p>The coordinate vector of <span class="math inline">\(v\)</span> with respect to <span class="math inline">\(B\)</span> is</p>
+<p><span class="math display">\[
+[v]_B=(a_1,\dots,a_n)^\top\in F^n.
+\]</span></p>
+</div>
+<div class="box definition">
+<p><strong>(Matrix Representation)</strong></p>
+<p>Let <span class="math inline">\(T:V\to W\)</span> be linear, with <span class="math inline">\(B=\{v_1,\dots,v_n\}\)</span> a basis of <span class="math inline">\(V\)</span> and <span class="math inline">\(C=\{w_1,\dots,w_m\}\)</span> a basis of <span class="math inline">\(W\)</span>. The matrix of <span class="math inline">\(T\)</span> with respect to <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> is the <span class="math inline">\(m\times n\)</span> matrix <span class="math inline">\([T]_{C\leftarrow B}\in F^{m\times n}\)</span> whose <span class="math inline">\(j\)</span>-th column is the coordinate vector <span class="math inline">\([T(v_j)]_C\)</span>:</p>
+<p><span class="math display">\[
+[T]_{C\leftarrow B}
+=
+\begin{pmatrix}
+\vert &amp; &amp; \vert \\
+[T(v_1)]_C &amp; \cdots &amp; [T(v_n)]_C \\
+\vert &amp; &amp; \vert
+\end{pmatrix}
+\]</span></p>
+<p>For all <span class="math inline">\(v\in V\)</span> the matrix satisfies:</p>
+<p><span class="math display">\[
+[T]_{C\leftarrow B}\,[v]_B = [T(v)]_C
+\]</span></p>
+</div>
+<div class="box theorem">
+<p><strong>(Matrix Operations Encode Linear Map Operations)</strong></p>
+<p>Let <span class="math inline">\(T_A, T_B\)</span> be linear transformations and <span class="math inline">\(A, B\)</span> be their matrices w.r.t some bases. Then:</p>
+<ul>
+<li><span class="math inline">\(AB = T_A \circ T_B\)</span></li>
+<li><span class="math inline">\(A+B = T_A + T_B\)</span></li>
+<li><span class="math inline">\(\lambda A = \lambda T_A\)</span></li>
+<li><span class="math inline">\(A^{-1} = T_A^{-1}\)</span></li>
+</ul>
+</div>
+<div class="box">
+<p><span style="color: red;">visualising matrix operations as linear map operations</span></p>
+</div>
+<p>There is often also matrix specifc language for some concepts we’ve already covered:</p>
+<div class="box">
+<p><span style="color: red;">kernel, column space. Note that row space is worth introducing for inner product space where it has meaning.</span></p>
+<p><span style="color: red;">Also understanding matrix injectivity, surjectivity, invertibility etc.</span></p>
+</div>
+<section id="change-of-basis" class="level2">
+<h2 class="anchored" data-anchor-id="change-of-basis">Change of Basis</h2>
+<div class="box definition">
+<p><strong>(Change Of Basis Matrix)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space and let <span class="math inline">\(B=\{v_1,\dots,v_n\}\)</span> and <span class="math inline">\(B'=\{v'_1,\dots,v'_n\}\)</span> be ordered bases of <span class="math inline">\(V\)</span>. The change-of-basis matrix from <span class="math inline">\(B\)</span> to <span class="math inline">\(B'\)</span> is the <span class="math inline">\(n\times n\)</span> matrix <span class="math inline">\(P_{B'\leftarrow B}\)</span> whose <span class="math inline">\(j\)</span>-th column is the coordinate vector of <span class="math inline">\(v_j\)</span> with respect to <span class="math inline">\(B'\)</span>:</p>
+<p><span class="math display">\[
+P_{B'\leftarrow B}=\begin{pmatrix} [v_1]_{B'} &amp; \cdots &amp; [v_n]_{B'} \end{pmatrix}.
+\]</span></p>
+<p>For every <span class="math inline">\(v\in V\)</span> we have</p>
+<p><span class="math display">\[
+[v]_{B'} = P_{B'\leftarrow B}\,[v]_B.
+\]</span></p>
+<p>See <a href="#change_of_basis_working">Working Example</a></p>
+</div>
+<div class="box theorem">
+<p><strong>(Change Of Basis Matrix iff Invertible Matrix)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space.</p>
+<ul>
+<li><p>If <span class="math inline">\(B\)</span> and <span class="math inline">\(B'\)</span> are ordered bases of <span class="math inline">\(V\)</span>, then the change-of-basis matrix <span class="math inline">\(P_{B'\leftarrow B}\)</span> is invertible and</p>
+<p><span class="math display">\[
+(P_{B'\leftarrow B})^{-1} = P_{B\leftarrow B'}.
+\]</span></p></li>
+<li><p>Conversely, any invertible <span class="math inline">\(n\times n\)</span> matrix <span class="math inline">\(P\)</span> over <span class="math inline">\(F\)</span> is the change-of-basis matrix <span class="math inline">\(P_{B'\leftarrow B}\)</span> for some ordered bases <span class="math inline">\(B,B'\)</span> of <span class="math inline">\(F^n\)</span>.</p></li>
+</ul>
+</div>
+<div class="box definition">
+<p><strong>(Similar Matrices)</strong></p>
+<p>Two <span class="math inline">\(n\times n\)</span> matrices <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> over <span class="math inline">\(F\)</span> are similar if there exists an invertible <span class="math inline">\(n\times n\)</span> matrix <span class="math inline">\(P\)</span> such that</p>
+<p><span class="math display">\[
+B = P^{-1} A P.
+\]</span></p>
+</div>
+<p>For finite-dimensional vector spaces, if we show a matrix property to be invariant up to change of basis (same for similar matrices), then we’ve essentially shown the property to be of the underlying linear map.</p>
+</section>
+</section>
+<section id="determinant" class="level1">
+<h1>Determinant</h1>
+<p>The determinant is a quantity associated with a linear map between vector spaces of the same finite dimension. This quantity measures the factor by which “area” scales under a linear transformation.</p>
+<div class="box">
+<p><span style="color: red;">visualising determinant as scaling of area</span></p>
+</div>
+<p>The area is the origin of the definition, but linear maps scale area in a very structured way. Hence, we can define the determinant as the unique algebraic function that captures this area-scaling behaviour (provided we also extend area to signed area) for general linear maps.</p>
+<ul>
+<li>There is a way to define determinants for the underlying linear map directly, howeveer we will not take that approach. We will define it for matrices and show it to be invariant under change of basis.</li>
+</ul>
+<p>The properties of area we want satisfied under a matrix transformation <span class="math inline">\(A\)</span> is algebraically encoded, and the definition derived as follows.</p>
+<div class="box">
+<p><span style="color: red;">Determinant as alternating bilinear form on area form, volume form, more general. Worth doing at some point to understand diff geo concepts.</span></p>
+</div>
+</section>
+<section id="structure-of-linear-operators" class="level1">
+<h1>Structure of Linear Operators</h1>
+<p>The space of <span class="math inline">\(T: V \to V\)</span> linear operators, <span class="math inline">\(\operatorname{End}(V)\)</span> is very interesting algebraically. In this space, it makes sense to study invariant subspaces:</p>
+<div class="box definition">
+<p><strong>(T-Invariant Subspace)</strong></p>
+<p>Let <span class="math inline">\(T:V\to V\)</span> be linear. A subspace <span class="math inline">\(U\subseteq V\)</span> is <span class="math inline">\(T\)</span>-invariant if <span class="math inline">\(T(U)\subseteq U\)</span>, equivalently:</p>
+<p><span class="math display">\[ u\in U\ \implies T(u)\in U\]</span></p>
+</div>
+<div class="box">
+<p><span style="color: red;">Example of big invariant subspace, and another smaller invariant piece sitting inside it</span>.</p>
+</div>
+<p>The smallest invariant subspace is <span class="math inline">\(1\)</span>-dimensional and hence looks like a line. This gives rise to eigenvalues and eigenvectors:</p>
+<div class="box definition">
+<p><strong>(Eigenvalue and Eigenvector)</strong></p>
+<p>Let <span class="math inline">\(T:V\to V\)</span> be linear. If for some scalar <span class="math inline">\(\lambda\in F\)</span> and <span class="math inline">\(v \in V\)</span> (<span class="math inline">\(v\)</span> cannot be <span class="math inline">\(0\)</span> vector):</p>
+<p><span class="math display">\[T(v)=\lambda v\]</span></p>
+<p>Then <span class="math inline">\(\lambda\)</span> is called an eigenvalue and <span class="math inline">\(v\)</span> is corresponding eigenvector.</p>
+</div>
+<section id="polynomials-in-t" class="level2">
+<h2 class="anchored" data-anchor-id="polynomials-in-t">Polynomials in T</h2>
+<ul>
+<li>Cayley-Hamilton Theorem: Characteristic polynomial of T annihilates T</li>
+<li>Minimal polynomials</li>
+</ul>
+</section>
+<section id="finite-dimensional-diagonalization" class="level2">
+<h2 class="anchored" data-anchor-id="finite-dimensional-diagonalization">Finite-Dimensional Diagonalization</h2>
+<p>Now suppose if the vector space is a finite <span class="math inline">\(n\)</span>-dimensional vector space. If we find <span class="math inline">\(n\)</span> linearly independent eigenvectors, then we can construct a basis for <span class="math inline">\(V\)</span> in terms of those eigenvectors which decomposes the action of <span class="math inline">\(T\)</span> as pure scalar multiplication on independent eigendirections. This is diagonalization:</p>
+<div class="box definition">
+<p><strong>(Diagonalization and Diagonalizability)</strong> Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space over <span class="math inline">\(F\)</span>. Then <span class="math inline">\(T: V \to V\)</span> is diagonalizable:</p>
+<ul>
+<li><p>If <span class="math inline">\(T\)</span> can be expressed as a diagonal matrix <span class="math inline">\(D=\operatorname{diag}(\lambda_1,\dots,\lambda_n)\)</span> by choice of some basis <span class="math inline">\(B\)</span>: <span class="math display">\[ [T]_B = D \]</span></p></li>
+<li><p>In matrix language, <span class="math inline">\(T\)</span> is diagonalizable if for any matrix representation A, we can find an invertible matrix <span class="math inline">\(P\)</span> such that:</p>
+<p><span class="math display">\[
+A = P\,D\,P^{-1}
+=
+\begin{pmatrix} | &amp; &amp; | \\
+v_1 &amp; \cdots &amp; v_n \\
+| &amp; &amp; | \end{pmatrix}
+\left(\begin{matrix}\lambda_1 &amp; &amp; 0\\ &amp; \ddots &amp; \\
+0 &amp; &amp; \lambda_n\end{matrix}\right)
+\begin{pmatrix} | &amp; &amp; | \\
+v_1 &amp; \cdots &amp; v_n \\
+| &amp; &amp; | \end{pmatrix}^{-1}
+\]</span></p></li>
+</ul>
+<p>Note that columns of <span class="math inline">\(P\)</span> are linearly independent eigenvectors of <span class="math inline">\(T\)</span> and a basis of <span class="math inline">\(V\)</span>.</p>
+<p>See <a href="#diagonalize_working_example">Working Example</a></p>
+</div>
+<p>Note that a specific diagonalization is not required to be unique! The diagonal matrix D is unique up to permutation of basis eigenvectors.</p>
+<div class="box">
+<p><span style="color: red;">We can choose different eigenvectors in a 2d space giving different Ps</span>.</p>
+</div>
+<section id="performing-diagonalization" class="level3">
+<h3 class="anchored" data-anchor-id="performing-diagonalization">Performing Diagonalization</h3>
+<p>Characteristic polynomial. It is invariant under change of basis, which makes sense.</p>
+<p>Eigenvalues are roots of this polynomial in F. Hence, the goal of finding eigenvalues is equivalent to finding roots of degree <span class="math inline">\(n\)</span> polynomials in the field <span class="math inline">\(F\)</span>.</p>
+<p>Eigenvectors live in ker(T - lamda*I) = Eigenspace.</p>
+<p>Eigenvalues do not “mix”. Hence, we just find the basis of each eigenspace and union it together.</p>
+<div class="box theorem">
+<p><strong>(Distinct Eigenvalues Give Linearly Independent Eigenvectors)</strong> Let <span class="math inline">\(V\)</span> be a vector space over <span class="math inline">\(F\)</span> and let <span class="math inline">\(T:V\to V\)</span> be linear. Suppose <span class="math inline">\(\lambda_1,\dots,\lambda_k\in F\)</span> are distinct eigenvalues and <span class="math inline">\(\{v_1,\dots,v_k\}\)</span> are their corresponding eigenvectors. Then <span class="math inline">\(\{v_1,\dots,v_k\}\)</span> are linearly independent.</p>
+</div>
+<p>But note that the converse of the above theorem is not true, the same eigenvalue can have linearly independent eigenvectors. Take any uniform scaling matrix as an example.</p>
+</section>
+<section id="diagonalization-guaranteed" class="level3">
+<h3 class="anchored" data-anchor-id="diagonalization-guaranteed">Diagonalization Guaranteed?</h3>
+<p>Now the natural question becomes - when is it possible to diagonalize an operator <span class="math inline">\(T\)</span>? The question is equivalent to asking, when are we guaranteed to have <span class="math inline">\(n\)</span> linearly independent eigenvectors?</p>
+<ul>
+<li>Potential issue 1: We need characteristic polynomial to have at least 1 eigenvalue.
+<ul>
+<li>When F = C this problem is solved by the fundamental theorem of algebra.</li>
+<li>Over R this is not automatically true.</li>
+</ul></li>
+</ul>
+<div class="box">
+<p><span style="color: red;">Rotations in R^2 have complex eigenvalues</span>.</p>
+</div>
+<ul>
+<li>Potential issue 2: Even if we have at least 1 eigenvalue, we may not have sufficient linearly independent eigenvectors. We need to ensure that eigenvalue contributes sufficient linearly independent eigenvectors to diagonalize <span class="math inline">\(T\)</span>. That is: <span class="math display">\[ \sum_{\{ \text{number of distinct eigenvalues} \}}{\operatorname{dim} \operatorname{ker} (T - \lambda_i I)}  = n \]</span></li>
+</ul>
+<p>We start by asking, what is the maximum number of linearly independent eigenvectors a specific eigenvalue can contribute? This is the algebraic multiplicity:</p>
+<p>Over <span class="math inline">\(\mathbb{C}\)</span>, the algebraic multiplicity is always <span class="math inline">\(n\)</span>. Hence:</p>
+<div class="box">
+<p><span style="color: red;">T is diagonalizable iff geometric multiplicity = algebraic multiplicity theorem</span>.</p>
+</div>
+<p>The above theorem is the best we can do because unfortunately, linear transformations allow for geometric multiplicity &lt; algebraic multiplcity. These are exactly the “shearing” transformations:</p>
+<div class="box">
+<p><span style="color: red;">Shearing in R^2</span>.</p>
+</div>
+</section>
+</section>
+<section id="finite-dimensional-jordan-decomposition" class="level2">
+<h2 class="anchored" data-anchor-id="finite-dimensional-jordan-decomposition">Finite-Dimensional Jordan Decomposition</h2>
+<p>Why is this question requiring of finite dimensionality?</p>
+</section>
+</section>
+<section id="further-intuitions" class="level1">
+<h1>Further Intuitions</h1>
+<section id="lin_ind_intuition" class="level3">
+<h3 class="anchored" data-anchor-id="lin_ind_intuition">Linear Independence Characterisation</h3>
+<p>This can be seen as beign able to take a path to 0. For linear independence, we have the following characterisation which is easier to check algebraically. Geometrically, it’s ensuring that there is only one way of getting to the <span class="math inline">\(0\)</span> vector.</p>
+</section>
+<section id="change_of_basis_working" class="level3">
+<h3 class="anchored" data-anchor-id="change_of_basis_working">Change of Basis Matrix</h3>
+<p>Intuition on how to construct a change of basis matrix.</p>
+</section>
+<section id="diagonalize_working_example" class="level3">
+<h3 class="anchored" data-anchor-id="diagonalize_working_example">Diagonalization Example</h3>
+<p>Worked example and process of diagonalization.</p>
+<div class="box definition">
+<p><strong>(Eigenvalue)</strong></p>
+<p>Let <span class="math inline">\(T:V\to V\)</span> be linear. A scalar <span class="math inline">\(\lambda\in F\)</span> is an eigenvalue of <span class="math inline">\(T\)</span> if there exists a nonzero vector <span class="math inline">\(v\in V\)</span> such that <span class="math inline">\(T(v)=\lambda v\)</span>.</p>
+</div>
+<p>This way I can continue to write while hte AI content is being generated.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

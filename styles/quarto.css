@@ -1,0 +1,42 @@
+.box {
+  border: 2px solid black;
+  padding: 1em;
+  margin: 1.5em 0;
+  background-color: #ffffff;
+  border-radius: 4px;
+}
+
+
+/* Definition numbering */
+
+.definition {
+  counter-increment: definition;
+}
+
+.definition::before {
+  content: "Definition " counter(definition);
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.75em;
+}
+
+
+/* Theorem numbering */
+
+.theorem {
+  counter-increment: theorem;
+}
+
+.theorem::before {
+  content: "Theorem " counter(theorem);
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.75em;
+}
+
+
+/* Start both counters at zero */
+
+body {
+  counter-reset: definition theorem;
+}
