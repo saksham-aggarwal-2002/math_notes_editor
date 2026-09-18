@@ -2,10 +2,17 @@
 title: "Linear Algebra"
 format:
   html:
+    theme: flatly
     css: ../styles/quarto.css
+    toc: true
+    toc-expand: 2 # How much to expand the TOC
+    toc-depth: 3   # Includes headings up to level 3 (###)
+    toc-title: "Contents"
+    number-sections: true
+    
 ---
 
-The goal here is to develop an algebraic theory for linear maps. 
+The goal here is to develop an algebraic theory for linear maps.
 
 # Vector Spaces and Linear Maps
 Vector space algebra codifes the flat "arrow" behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.
@@ -74,6 +81,55 @@ $\ker T$ is a subspace of $V$ and $\operatorname{im}T$ is a subspace of $W$.
 
 :::
 
+## Quotient Spaces
+
+## Direct Sums
+
+Different subspaces can "overlap" or they can be "independent".
+
+::: {.box .definition}
+
+**(Linearly Independent Subspaces)**
+
+Let $U,W\subseteq V$ be subspaces. $U$ and $W$ are linearly independent when:
+$$
+U\cap W=\{0\}
+$$
+Equivalently $\forall u\in U$ and $\forall w\in W$:
+$$
+u+w=0 \implies u=0\ \text{and}\ w=0
+$$
+:::
+
+::: {.box}
+
+[Visual intuition for overlapping and independent subspaces]{style="color: red;"}.
+
+:::
+
+
+::: {.box .definition}
+
+**(Sum And Direct Sum Of Subspaces)**
+
+Let $U,W\subseteq V$ be subspaces. The sum of $U$ and $W$ is
+$$
+U+W=\{u+w : u\in U,\ w\in W\},
+$$
+which is a subspace of $V$.
+
+- If $U$ and $W$ are independent, then we use direct sum $U\oplus W$.
+
+:::
+
+Direct sums mean we have unique representation for every vector in a specfic form??
+
+::: {.box}
+
+[Visual intuition for sum and direct sum]{style="color: red;"}.
+
+:::
+
 
 # Generating Sets
 
@@ -88,7 +144,7 @@ As is a common motif in the study of algebraic structures, we ask if there is a 
 
 - **Linear independence:** A set of vectors is linearly independent if no vector in the set can be written as a linear combination of the others. Equivalently if the following holds:
   $$\sum_{i=1}^n a_i v_i=0 \implies a_1=\cdots=a_n=0$$
-  See [Intuition](#lin_ind_intuition)
+  See [Intuition](#lin_ind_intuition).
 
 :::
 
@@ -134,6 +190,14 @@ then $V$ and $W$ are isomorphic.
 ## Some Useful Results
 
 Some useful results relating to above ideas include:
+
+
+::: {.box}
+
+[Direct sums and dimension/characterization?]{style="color: red;"}.
+
+:::
+
 
 ::: {.box .theorem}
 
@@ -273,7 +337,7 @@ $$
 [v]_{B'} = P_{B'\leftarrow B}\,[v]_B.
 $$
 
-See [Working Example](#change_of_basis_working)
+See [Working Example](#change_of_basis_working).
 
 :::
 
@@ -330,6 +394,11 @@ The properties of area we want satisfied under a matrix transformation $A$ is al
 :::
 
 
+# Polynomials in T
+
+- Cayley-Hamilton Theorem: Characteristic polynomial of T annihilates T
+- Minimal polynomials
+
 # Structure of Linear Operators
 
 The space of $T: V \to V$ linear operators, $\operatorname{End}(V)$ is very interesting algebraically. In this space, it makes sense to study invariant subspaces:
@@ -350,7 +419,7 @@ $$ u\in U\ \implies T(u)\in U$$
 
 :::
 
-The smallest invariant subspace is $1$-dimensional and hence looks like a line. This gives rise to eigenvalues and eigenvectors:
+The smallest invariant subspace is $1$-dimensional, which means $T$ can only scale this subspace (hence looks like a line). This motivates eigenvalues and eigenvectors:
 
 ::: {.box .definition}
 
@@ -360,13 +429,34 @@ Let $T:V\to V$ be linear. If for some scalar $\lambda\in F$ and $v \in V$ ($v$ c
 
 $$T(v)=\lambda v$$
 
-Then $\lambda$ is called an eigenvalue and $v$ is corresponding eigenvector.
+Then $\lambda$ is called an eigenvalue and $v$ is corresponding eigenvector. 
 :::
 
-## Polynomials in T
+The collection of all eigenvectors associated with $\lambda$ (along with 0) forms a $T$-invariant subspace called the eigenspace of $\lambda$.
 
-- Cayley-Hamilton Theorem: Characteristic polynomial of T annihilates T
-- Minimal polynomials
+::: {.box .definition}
+
+**(Eigenspace)**
+
+Let $T:V\to V$ be linear and $\lambda\in F$. The eigenspace of $\lambda$ is
+
+$$
+E_\lambda=\ker(T-\lambda I)=\{v\in V:T(v)=\lambda v\}.
+$$
+
+Since:
+
+$$T(v) = \lambda v \iff T(v) - \lambda v = 0 \iff (T - \lambda I)v = 0 $$
+
+:::
+
+Note that $E_\lambda$ may not be $1$-dimensional. Think of a matrix which uniformly scales the plane by $\lambda$. Then we can find many different smaller $1$-dimensional invariant pieces inside that plane.
+
+::: {.box}
+
+[Scaling plane having different invariant lines in it]{style="color: red;"}.
+
+:::
 
 
 ## Finite-Dimensional Diagonalization
@@ -398,7 +488,7 @@ Let $V$ be an $n$-dimensional vector space over $F$. Then $T: V \to V$ is diagon
 
 Note that columns of $P$ are linearly independent eigenvectors of $T$ and a basis of $V$. 
 
-See [Working Example](#diagonalize_working_example)
+See [Working Example](#diagonalize_working_example).
 
 :::
 
@@ -412,62 +502,137 @@ Note that a specific diagonalization is not required to be unique! The diagonal 
 
 ### Performing Diagonalization
 
-Characteristic polynomial. It is invariant under change of basis, which makes sense.
+To perform diagonalization, we must first find the eigenvalues. We can do this through the determinant function which yeilds the following polynomial in the field $F$:
 
-Eigenvalues are roots of this polynomial in F. Hence, the goal of finding eigenvalues is equivalent to finding roots of degree $n$ polynomials in the field $F$.
+::: {.box .definition}
 
-Eigenvectors live in ker(T - lamda*I) = Eigenspace.
+**(Characteristic Polynomial)**
 
-Eigenvalues do not "mix". Hence, we just find the basis of each eigenspace and union it together.
+Let $V$ be an $n$-dimensional vector space over $F$ and let $T:V\to V$ be linear. Let $A$ be some matrix representation of $T$, then the characteristic polynomial is:
 
-::: {.box .theorem}
-**(Distinct Eigenvalues Give Linearly Independent Eigenvectors)**
-Let $V$ be a vector space over $F$ and let $T:V\to V$ be linear. Suppose $\lambda_1,\dots,\lambda_k\in F$ are distinct eigenvalues and $\{v_1,\dots,v_k\}$ are their corresponding eigenvectors. Then $\{v_1,\dots,v_k\}$ are linearly independent.
+$$
+\chi_T(t)=\det(A-t I)
+$$
+
+- See [Proof](#charac_poly_COB_invariant) that $\chi_T(t)$ is invariant under change of basis and hence well defined for $T$.
+
 :::
 
-But note that the converse of the above theorem is not true, the same eigenvalue can have linearly independent eigenvectors. Take any uniform scaling matrix as an example.
+Eigenvalues are exactly the roots of this characteristic polynomial, a deeply algebraic object.
+
+::: {.box .theorem}
+
+**(Eigenvalue iff Characteristic Polynomial Root)**
+
+A scalar $\lambda\in F$ is an eigenvalue of $T$ iff $\chi_T(\lambda)=0$
+
+See [Proof](#eigenval_are_charac_poly_roots_proof).
+
+:::
+
+Now that we've found an eigenvale $\lambda$, we know the associated eigenspace $E_\lambda$ will have all the available eigenvectors. Hence finding a basis for $E_\lambda$ gives us the maximum possible linearly independent eigenvectors associated with $\lambda$. 
+
+The following theorem tells us that we can do the same procedure for different eigenvalues, and ensures that eigenspaces do not "overlap". That is eigenspaces do not "mix".
+
+::: {.box .theorem}
+
+**(Eigenspaces Don't Mix)**
+
+Let $T:V\to V$ be linear with $\lambda_1,\dots,\lambda_k\in F$ being distinct eigenvalues. Then the associated eigenspaces $E_{\lambda_1}, \dots E_{\lambda_k}$ are collectively linearly independent spaces.
+
+See [Intuition](#eigenspace_dont_mix_intuition). See [Proof](#eigenspace_dont_mix_proof).
+
+:::
+
+
+
 
 ### Diagonalization Guaranteed?
 
-Now the natural question becomes - when is it possible to diagonalize an operator $T$? The question is equivalent to asking, when are we guaranteed to have $n$ linearly independent eigenvectors?
+Now the natural question becomes - is it always possible to diagonalize an operator $T$? The question is equivalent to asking, when are we guaranteed to have $n$ linearly independent eigenvectors?
 
-- Potential issue 1: We need characteristic polynomial to have at least 1 eigenvalue.
-  - When F = C this problem is solved by the fundamental theorem of algebra.
-  - Over R this is not automatically true.
+#### Potential Problem 1: Rotation Behaviours
 
-:::{.box}
-[Rotations in R^2 have complex eigenvalues]{style="color: red;"}.
+We needed the characteristic polynomial over the field $F$ to have at least 1 eigenvalue. When $F = \mathbb{R}$, we know polynomials may not have real solutions. This situation corresponds exactly with rotations:
+
+::: {.box}
+
+[Rotataion matrices cannot have real diagonalization viz, but has complex eigenvalues]{style="color: red;"}.
+
 :::
 
-- Potential issue 2: Even if we have at least 1 eigenvalue, we may not have sufficient linearly independent eigenvectors. We need to ensure that eigenvalue contributes sufficient linearly independent eigenvectors to diagonalize $T$. That is:
-$$ \sum_{\{ \text{number of distinct eigenvalues} \}}{\operatorname{dim} \operatorname{ker} (T - \lambda_i I)}  = n $$
- 
-We start by asking, what is the maximum number of linearly independent eigenvectors a specific eigenvalue can contribute? This is the algebraic multiplicity:
+Intuitively, scalar multiplication with real numbers are enough for scaling and reflecting but not rotation which is encoded through multiplication by complex numbers. Hence, rotation matrices are not diagonalizable over $\mathbb{R}$ but by the fundamental theorem of algebra, the characteristic polynomial always has at least $1$ solution.
 
-Over $\mathbb{C}$, the algebraic multiplicity is always $n$. Hence:
+::: {.box .theorem}
 
-:::{.box}
-[T is diagonalizable iff geometric multiplicity = algebraic multiplicity theorem]{style="color: red;"}.
+**(Eigenvalue Existence)**
+
+Let $V$ be a nonzero finite-dimensional vector space over $F$ and $T$ a linear operator.
+
+- If $F = \mathbb{C}$ and then $T$ has at least one eigenvalue in $\mathbb{C}$
+- If $F = \mathbb{R}$ and then $T$ may not have any eigenvalues in $\mathbb{R}$ due to rotation transformations
+
 :::
 
-The above theorem is the best we can do because unfortunately, linear transformations allow for geometric multiplicity < algebraic multiplcity. These are exactly the "shearing" transformations:
+Hence, working in the right field that can express rotations via multiplication such as $F = \mathbb{C}$ eliminates this potential problem.
+
+#### Potential Problem 2: Shearing Behaviours
+
+Even if we have guaranteed existence of an eigenvalue, we need to ensure that each eigenvalue contributes sufficient linearly independent eigenvectors to diagonalize $T$. That is:
+$$ \sum_{\{ \lambda_is \}}{\operatorname{nullity} (E_{\lambda_i})}  = n = \operatorname{dim} V $$
+
+Unfortunately, this is where the dream of perfect diagonalization dies. Even over $F = \mathbb{C}$, the above condition may not be true. Intuitively, this is exacty because of a linear operator can "shear" certain directions into other directions. Fundamentally, $T$ is not scaling these directions but adding another vector to them.
 
 :::{.box}
 [Shearing in R^2]{style="color: red;"}.
 :::
 
+#### Characterizing Diagonalizability Condition
+
+Even if diagonalization is not always possible, we can at least characterize when it is gauranteed. The maximum number of linearly independent eigenvectors a specific eigenvalue can contribute is algebraically encoded in the characteristic polynomial.
+
+::: {.box .theorem}
+
+**(Algebraic Multiplicity Bounds Geometric Multiplicity)**
+
+Let $V$ be an $n$-dimensional vector space over $F$ and let $T:V\to V$ be linear. Suppose the characteristic polynomial factors over $F$ as:
+$$
+\chi_T(t)= (t-{\lambda_1})^{a_{\lambda_1}} \dots (t-{\lambda_k})^{a_{\lambda_k}} \text{ for } k \leq n
+$$
+
+The following bound holds:
+
+$$
+\underbrace{\operatorname{nullity}(\lambda_i)}_{\operatorname{GeoMult}(\lambda_i)} \leq \underbrace{a_{\lambda_i}}_{\operatorname{AlgMult}(\lambda_i)}
+$$
+
+:::
+
+Over $\mathbb{C}$ by the fundamental theorem of algebra, the sum of all algebraic multiplicities is $n = \operatorname{dim}V$ which is how many linearly independent eigenvectors we need. Hence, for $T$ to be diagonalized, the geometric multiplicity must be maximally the algebraic multiplicity.
+
+::: {.box .theorem}
+
+**(Diagonalizability Characterization)**
+
+$T$ is diagonalizable iff for every eigenvalue $\lambda_i$:
+$$
+\operatorname{GeoMult}(\lambda_i) = \operatorname{AlgMult}(\lambda_i)
+$$
+
+:::
+
 
 ## Finite-Dimensional Jordan Decomposition
 
-Why is this question requiring of finite dimensionality?
+We found diagonalization to not always be possible due to "shearing" behaviours of linear transformations. Now ...
 
-# Further Intuitions
+# Proofs and Intuitions 
 
-### Linear Independence Characterisation {#lin_ind_intuition}
+### Linear Independence Intuition {#lin_ind_intuition}
 
 This can be seen as beign able to take a path to 0. For linear independence, we have the following characterisation which is easier to check algebraically. Geometrically, it's ensuring that there is only one way of getting to the $0$ vector.
 
-### Change of Basis Matrix  {#change_of_basis_working}
+### Change of Basis Matrix Example {#change_of_basis_working}
 
 Intuition on how to construct a change of basis matrix.
 
@@ -477,63 +642,15 @@ Intuition on how to construct a change of basis matrix.
 Worked example and process of diagonalization.
 
 
-
-::: {.box .definition}
-
-**(Eigenvalue)**
-
-Let $T:V\to V$ be linear. A scalar $\lambda\in F$ is an eigenvalue of $T$ if there exists a nonzero vector $v\in V$ such that $T(v)=\lambda v$.
-
-:::
-
-This way I can continue to write while hte AI content is being generated. 
+### Proof that Eigenvalues are Roots of $\chi_T(t)$  {#eigenval_are_charac_poly_roots_proof}
 
 
-::: {.box}
-
-[Placeholder]{style="color: red;"}.
-
-:::
+### Proof that $\chi_T(t)$ is Invariant {#charac_poly_COB_invariant}
 
 
+### Intuition for Eigenspaces not mixing  {#eigenspace_dont_mix_intuition}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Proof for Eigenspaces not mixing  {#eigenspace_dont_mix_proof}
 
 

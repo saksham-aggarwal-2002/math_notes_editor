@@ -34,7 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="linalg_1_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="linalg_1_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="linalg_1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="linalg_1_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="linalg_1_files/libs/bootstrap/bootstrap-82a8e0681529fff444bbc39736ff6b3a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -69,10 +69,52 @@ window.Quarto = {
 <link rel="stylesheet" href="../styles/quarto.css">
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#vector-spaces-and-linear-maps" id="toc-vector-spaces-and-linear-maps" class="nav-link active" data-scroll-target="#vector-spaces-and-linear-maps"><span class="header-section-number">1</span> Vector Spaces and Linear Maps</a>
+  <ul class="collapse">
+  <li><a href="#quotient-spaces" id="toc-quotient-spaces" class="nav-link" data-scroll-target="#quotient-spaces"><span class="header-section-number">1.1</span> Quotient Spaces</a></li>
+  <li><a href="#direct-sums" id="toc-direct-sums" class="nav-link" data-scroll-target="#direct-sums"><span class="header-section-number">1.2</span> Direct Sums</a></li>
+  </ul></li>
+  <li><a href="#generating-sets" id="toc-generating-sets" class="nav-link" data-scroll-target="#generating-sets"><span class="header-section-number">2</span> Generating Sets</a>
+  <ul class="collapse">
+  <li><a href="#basis-and-dimension" id="toc-basis-and-dimension" class="nav-link" data-scroll-target="#basis-and-dimension"><span class="header-section-number">2.1</span> Basis and Dimension</a></li>
+  <li><a href="#some-useful-results" id="toc-some-useful-results" class="nav-link" data-scroll-target="#some-useful-results"><span class="header-section-number">2.2</span> Some Useful Results</a></li>
+  </ul></li>
+  <li><a href="#finite-dimensional-coordinate-system" id="toc-finite-dimensional-coordinate-system" class="nav-link" data-scroll-target="#finite-dimensional-coordinate-system"><span class="header-section-number">3</span> Finite-Dimensional Coordinate System</a>
+  <ul class="collapse">
+  <li><a href="#change-of-basis" id="toc-change-of-basis" class="nav-link" data-scroll-target="#change-of-basis"><span class="header-section-number">3.1</span> Change of Basis</a></li>
+  </ul></li>
+  <li><a href="#determinant" id="toc-determinant" class="nav-link" data-scroll-target="#determinant"><span class="header-section-number">4</span> Determinant</a></li>
+  <li><a href="#polynomials-in-t" id="toc-polynomials-in-t" class="nav-link" data-scroll-target="#polynomials-in-t"><span class="header-section-number">5</span> Polynomials in T</a></li>
+  <li><a href="#structure-of-linear-operators" id="toc-structure-of-linear-operators" class="nav-link" data-scroll-target="#structure-of-linear-operators"><span class="header-section-number">6</span> Structure of Linear Operators</a>
+  <ul class="collapse">
+  <li><a href="#finite-dimensional-diagonalization" id="toc-finite-dimensional-diagonalization" class="nav-link" data-scroll-target="#finite-dimensional-diagonalization"><span class="header-section-number">6.1</span> Finite-Dimensional Diagonalization</a>
+  <ul class="collapse">
+  <li><a href="#performing-diagonalization" id="toc-performing-diagonalization" class="nav-link" data-scroll-target="#performing-diagonalization"><span class="header-section-number">6.1.1</span> Performing Diagonalization</a></li>
+  <li><a href="#diagonalization-guaranteed" id="toc-diagonalization-guaranteed" class="nav-link" data-scroll-target="#diagonalization-guaranteed"><span class="header-section-number">6.1.2</span> Diagonalization Guaranteed?</a></li>
+  </ul></li>
+  <li><a href="#finite-dimensional-jordan-decomposition" id="toc-finite-dimensional-jordan-decomposition" class="nav-link" data-scroll-target="#finite-dimensional-jordan-decomposition"><span class="header-section-number">6.2</span> Finite-Dimensional Jordan Decomposition</a></li>
+  </ul></li>
+  <li><a href="#proofs-and-intuitions" id="toc-proofs-and-intuitions" class="nav-link" data-scroll-target="#proofs-and-intuitions"><span class="header-section-number">7</span> Proofs and Intuitions</a>
+  <ul class="collapse">
+  <li><a href="#lin_ind_intuition" id="toc-lin_ind_intuition" class="nav-link" data-scroll-target="#lin_ind_intuition"><span class="header-section-number">7.0.1</span> Linear Independence Intuition</a></li>
+  <li><a href="#change_of_basis_working" id="toc-change_of_basis_working" class="nav-link" data-scroll-target="#change_of_basis_working"><span class="header-section-number">7.0.2</span> Change of Basis Matrix Example</a></li>
+  <li><a href="#diagonalize_working_example" id="toc-diagonalize_working_example" class="nav-link" data-scroll-target="#diagonalize_working_example"><span class="header-section-number">7.0.3</span> Diagonalization Example</a></li>
+  <li><a href="#eigenval_are_charac_poly_roots_proof" id="toc-eigenval_are_charac_poly_roots_proof" class="nav-link" data-scroll-target="#eigenval_are_charac_poly_roots_proof"><span class="header-section-number">7.0.4</span> Proof that Eigenvalues are Roots of <span class="math inline">\(\chi_T(t)\)</span></a></li>
+  <li><a href="#charac_poly_COB_invariant" id="toc-charac_poly_COB_invariant" class="nav-link" data-scroll-target="#charac_poly_COB_invariant"><span class="header-section-number">7.0.5</span> Proof that <span class="math inline">\(\chi_T(t)\)</span> is Invariant</a></li>
+  <li><a href="#eigenspace_dont_mix_intuition" id="toc-eigenspace_dont_mix_intuition" class="nav-link" data-scroll-target="#eigenspace_dont_mix_intuition"><span class="header-section-number">7.0.6</span> Intuition for Eigenspaces not mixing</a></li>
+  <li><a href="#eigenspace_dont_mix_proof" id="toc-eigenspace_dont_mix_proof" class="nav-link" data-scroll-target="#eigenspace_dont_mix_proof"><span class="header-section-number">7.0.7</span> Proof for Eigenspaces not mixing</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -95,8 +137,8 @@ window.Quarto = {
 
 
 <p>The goal here is to develop an algebraic theory for linear maps.</p>
-<section id="vector-spaces-and-linear-maps" class="level1">
-<h1>Vector Spaces and Linear Maps</h1>
+<section id="vector-spaces-and-linear-maps" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Vector Spaces and Linear Maps</h1>
 <p>Vector space algebra codifes the flat “arrow” behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.</p>
 <div class="box definition">
 <p><strong>(Vector Space)</strong></p>
@@ -148,17 +190,48 @@ window.Quarto = {
 <div class="box">
 <p><span style="color: red;">visualise ker and image spaces of matrix</span></p>
 </div>
+<section id="quotient-spaces" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="quotient-spaces"><span class="header-section-number">1.1</span> Quotient Spaces</h2>
 </section>
-<section id="generating-sets" class="level1">
-<h1>Generating Sets</h1>
-<section id="basis-and-dimension" class="level2">
-<h2 class="anchored" data-anchor-id="basis-and-dimension">Basis and Dimension</h2>
+<section id="direct-sums" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="direct-sums"><span class="header-section-number">1.2</span> Direct Sums</h2>
+<p>Different subspaces can “overlap” or they can be “independent”.</p>
+<div class="box definition">
+<p><strong>(Linearly Independent Subspaces)</strong></p>
+<p>Let <span class="math inline">\(U,W\subseteq V\)</span> be subspaces. <span class="math inline">\(U\)</span> and <span class="math inline">\(W\)</span> are linearly independent when: <span class="math display">\[
+U\cap W=\{0\}
+\]</span> Equivalently <span class="math inline">\(\forall u\in U\)</span> and <span class="math inline">\(\forall w\in W\)</span>: <span class="math display">\[
+u+w=0 \implies u=0\ \text{and}\ w=0
+\]</span></p>
+</div>
+<div class="box">
+<p><span style="color: red;">Visual intuition for overlapping and independent subspaces</span>.</p>
+</div>
+<div class="box definition">
+<p><strong>(Sum And Direct Sum Of Subspaces)</strong></p>
+<p>Let <span class="math inline">\(U,W\subseteq V\)</span> be subspaces. The sum of <span class="math inline">\(U\)</span> and <span class="math inline">\(W\)</span> is <span class="math display">\[
+U+W=\{u+w : u\in U,\ w\in W\},
+\]</span> which is a subspace of <span class="math inline">\(V\)</span>.</p>
+<ul>
+<li>If <span class="math inline">\(U\)</span> and <span class="math inline">\(W\)</span> are independent, then we use direct sum <span class="math inline">\(U\oplus W\)</span>.</li>
+</ul>
+</div>
+<p>Direct sums mean we have unique representation for every vector in a specfic form??</p>
+<div class="box">
+<p><span style="color: red;">Visual intuition for sum and direct sum</span>.</p>
+</div>
+</section>
+</section>
+<section id="generating-sets" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Generating Sets</h1>
+<section id="basis-and-dimension" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="basis-and-dimension"><span class="header-section-number">2.1</span> Basis and Dimension</h2>
 <p>As is a common motif in the study of algebraic structures, we ask if there is a smaller set that can generate the whole space. This leads us to the following definitions:</p>
 <div class="box definition">
 <p><strong>(Span and Linear Independence)</strong></p>
 <ul>
 <li><p><strong>Span:</strong> The set of all linear combinations of a set of vectors <span class="math inline">\(S\)</span>: <span class="math display">\[\operatorname{span}(S)=\left\{\sum_{i=1}^k a_i v_i : a_i\in F,\ v_i\in S\right\}.\]</span></p></li>
-<li><p><strong>Linear independence:</strong> A set of vectors is linearly independent if no vector in the set can be written as a linear combination of the others. Equivalently if the following holds: <span class="math display">\[\sum_{i=1}^n a_i v_i=0 \implies a_1=\cdots=a_n=0\]</span> See <a href="#lin_ind_intuition">Intuition</a></p></li>
+<li><p><strong>Linear independence:</strong> A set of vectors is linearly independent if no vector in the set can be written as a linear combination of the others. Equivalently if the following holds: <span class="math display">\[\sum_{i=1}^n a_i v_i=0 \implies a_1=\cdots=a_n=0\]</span> See <a href="#lin_ind_intuition">Intuition</a>.</p></li>
 </ul>
 </div>
 <div class="box">
@@ -188,9 +261,12 @@ window.Quarto = {
 \]</span> then <span class="math inline">\(V\)</span> and <span class="math inline">\(W\)</span> are isomorphic.</p>
 </div>
 </section>
-<section id="some-useful-results" class="level2">
-<h2 class="anchored" data-anchor-id="some-useful-results">Some Useful Results</h2>
+<section id="some-useful-results" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="some-useful-results"><span class="header-section-number">2.2</span> Some Useful Results</h2>
 <p>Some useful results relating to above ideas include:</p>
+<div class="box">
+<p><span style="color: red;">Direct sums and dimension/characterization?</span>.</p>
+</div>
 <div class="box theorem">
 <p><strong>(Dimension of Quotient Space)</strong></p>
 <p>Let <span class="math inline">\(V\)</span> be a finite-dimensional vector space and <span class="math inline">\(U\subseteq V\)</span> a subspace. If <span class="math inline">\(\dim V=n\)</span> and <span class="math inline">\(\dim U=m\)</span> then</p>
@@ -221,8 +297,8 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="finite-dimensional-coordinate-system" class="level1">
-<h1>Finite-Dimensional Coordinate System</h1>
+<section id="finite-dimensional-coordinate-system" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Finite-Dimensional Coordinate System</h1>
 <p>Suppose we have a finite dimensional vector space. So we’ve found a finite set of vectors which generate the whole space (summarises the algebraic structure). Hence, given a basis, we can define a coordinate system as an orientation to that generating system.</p>
 <div class="box definition">
 <p><strong>(Coordinate Vector Representation)</strong></p>
@@ -270,8 +346,8 @@ v=\sum_{i=1}^n a_i v_i.
 <p><span style="color: red;">kernel, column space. Note that row space is worth introducing for inner product space where it has meaning.</span></p>
 <p><span style="color: red;">Also understanding matrix injectivity, surjectivity, invertibility etc.</span></p>
 </div>
-<section id="change-of-basis" class="level2">
-<h2 class="anchored" data-anchor-id="change-of-basis">Change of Basis</h2>
+<section id="change-of-basis" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="change-of-basis"><span class="header-section-number">3.1</span> Change of Basis</h2>
 <div class="box definition">
 <p><strong>(Change Of Basis Matrix)</strong></p>
 <p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space and let <span class="math inline">\(B=\{v_1,\dots,v_n\}\)</span> and <span class="math inline">\(B'=\{v'_1,\dots,v'_n\}\)</span> be ordered bases of <span class="math inline">\(V\)</span>. The change-of-basis matrix from <span class="math inline">\(B\)</span> to <span class="math inline">\(B'\)</span> is the <span class="math inline">\(n\times n\)</span> matrix <span class="math inline">\(P_{B'\leftarrow B}\)</span> whose <span class="math inline">\(j\)</span>-th column is the coordinate vector of <span class="math inline">\(v_j\)</span> with respect to <span class="math inline">\(B'\)</span>:</p>
@@ -282,7 +358,7 @@ P_{B'\leftarrow B}=\begin{pmatrix} [v_1]_{B'} &amp; \cdots &amp; [v_n]_{B'} \end
 <p><span class="math display">\[
 [v]_{B'} = P_{B'\leftarrow B}\,[v]_B.
 \]</span></p>
-<p>See <a href="#change_of_basis_working">Working Example</a></p>
+<p>See <a href="#change_of_basis_working">Working Example</a>.</p>
 </div>
 <div class="box theorem">
 <p><strong>(Change Of Basis Matrix iff Invertible Matrix)</strong></p>
@@ -305,8 +381,8 @@ B = P^{-1} A P.
 <p>For finite-dimensional vector spaces, if we show a matrix property to be invariant up to change of basis (same for similar matrices), then we’ve essentially shown the property to be of the underlying linear map.</p>
 </section>
 </section>
-<section id="determinant" class="level1">
-<h1>Determinant</h1>
+<section id="determinant" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Determinant</h1>
 <p>The determinant is a quantity associated with a linear map between vector spaces of the same finite dimension. This quantity measures the factor by which “area” scales under a linear transformation.</p>
 <div class="box">
 <p><span style="color: red;">visualising determinant as scaling of area</span></p>
@@ -320,8 +396,15 @@ B = P^{-1} A P.
 <p><span style="color: red;">Determinant as alternating bilinear form on area form, volume form, more general. Worth doing at some point to understand diff geo concepts.</span></p>
 </div>
 </section>
-<section id="structure-of-linear-operators" class="level1">
-<h1>Structure of Linear Operators</h1>
+<section id="polynomials-in-t" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Polynomials in T</h1>
+<ul>
+<li>Cayley-Hamilton Theorem: Characteristic polynomial of T annihilates T</li>
+<li>Minimal polynomials</li>
+</ul>
+</section>
+<section id="structure-of-linear-operators" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Structure of Linear Operators</h1>
 <p>The space of <span class="math inline">\(T: V \to V\)</span> linear operators, <span class="math inline">\(\operatorname{End}(V)\)</span> is very interesting algebraically. In this space, it makes sense to study invariant subspaces:</p>
 <div class="box definition">
 <p><strong>(T-Invariant Subspace)</strong></p>
@@ -331,22 +414,29 @@ B = P^{-1} A P.
 <div class="box">
 <p><span style="color: red;">Example of big invariant subspace, and another smaller invariant piece sitting inside it</span>.</p>
 </div>
-<p>The smallest invariant subspace is <span class="math inline">\(1\)</span>-dimensional and hence looks like a line. This gives rise to eigenvalues and eigenvectors:</p>
+<p>The smallest invariant subspace is <span class="math inline">\(1\)</span>-dimensional, which means <span class="math inline">\(T\)</span> can only scale this subspace (hence looks like a line). This motivates eigenvalues and eigenvectors:</p>
 <div class="box definition">
 <p><strong>(Eigenvalue and Eigenvector)</strong></p>
 <p>Let <span class="math inline">\(T:V\to V\)</span> be linear. If for some scalar <span class="math inline">\(\lambda\in F\)</span> and <span class="math inline">\(v \in V\)</span> (<span class="math inline">\(v\)</span> cannot be <span class="math inline">\(0\)</span> vector):</p>
 <p><span class="math display">\[T(v)=\lambda v\]</span></p>
 <p>Then <span class="math inline">\(\lambda\)</span> is called an eigenvalue and <span class="math inline">\(v\)</span> is corresponding eigenvector.</p>
 </div>
-<section id="polynomials-in-t" class="level2">
-<h2 class="anchored" data-anchor-id="polynomials-in-t">Polynomials in T</h2>
-<ul>
-<li>Cayley-Hamilton Theorem: Characteristic polynomial of T annihilates T</li>
-<li>Minimal polynomials</li>
-</ul>
-</section>
-<section id="finite-dimensional-diagonalization" class="level2">
-<h2 class="anchored" data-anchor-id="finite-dimensional-diagonalization">Finite-Dimensional Diagonalization</h2>
+<p>The collection of all eigenvectors associated with <span class="math inline">\(\lambda\)</span> (along with 0) forms a <span class="math inline">\(T\)</span>-invariant subspace called the eigenspace of <span class="math inline">\(\lambda\)</span>.</p>
+<div class="box definition">
+<p><strong>(Eigenspace)</strong></p>
+<p>Let <span class="math inline">\(T:V\to V\)</span> be linear and <span class="math inline">\(\lambda\in F\)</span>. The eigenspace of <span class="math inline">\(\lambda\)</span> is</p>
+<p><span class="math display">\[
+E_\lambda=\ker(T-\lambda I)=\{v\in V:T(v)=\lambda v\}.
+\]</span></p>
+<p>Since:</p>
+<p><span class="math display">\[T(v) = \lambda v \iff T(v) - \lambda v = 0 \iff (T - \lambda I)v = 0 \]</span></p>
+</div>
+<p>Note that <span class="math inline">\(E_\lambda\)</span> may not be <span class="math inline">\(1\)</span>-dimensional. Think of a matrix which uniformly scales the plane by <span class="math inline">\(\lambda\)</span>. Then we can find many different smaller <span class="math inline">\(1\)</span>-dimensional invariant pieces inside that plane.</p>
+<div class="box">
+<p><span style="color: red;">Scaling plane having different invariant lines in it</span>.</p>
+</div>
+<section id="finite-dimensional-diagonalization" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="finite-dimensional-diagonalization"><span class="header-section-number">6.1</span> Finite-Dimensional Diagonalization</h2>
 <p>Now suppose if the vector space is a finite <span class="math inline">\(n\)</span>-dimensional vector space. If we find <span class="math inline">\(n\)</span> linearly independent eigenvectors, then we can construct a basis for <span class="math inline">\(V\)</span> in terms of those eigenvectors which decomposes the action of <span class="math inline">\(T\)</span> as pure scalar multiplication on independent eigendirections. This is diagonalization:</p>
 <div class="box definition">
 <p><strong>(Diagonalization and Diagonalizability)</strong> Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space over <span class="math inline">\(F\)</span>. Then <span class="math inline">\(T: V \to V\)</span> is diagonalizable:</p>
@@ -367,76 +457,120 @@ v_1 &amp; \cdots &amp; v_n \\
 \]</span></p></li>
 </ul>
 <p>Note that columns of <span class="math inline">\(P\)</span> are linearly independent eigenvectors of <span class="math inline">\(T\)</span> and a basis of <span class="math inline">\(V\)</span>.</p>
-<p>See <a href="#diagonalize_working_example">Working Example</a></p>
+<p>See <a href="#diagonalize_working_example">Working Example</a>.</p>
 </div>
 <p>Note that a specific diagonalization is not required to be unique! The diagonal matrix D is unique up to permutation of basis eigenvectors.</p>
 <div class="box">
 <p><span style="color: red;">We can choose different eigenvectors in a 2d space giving different Ps</span>.</p>
 </div>
-<section id="performing-diagonalization" class="level3">
-<h3 class="anchored" data-anchor-id="performing-diagonalization">Performing Diagonalization</h3>
-<p>Characteristic polynomial. It is invariant under change of basis, which makes sense.</p>
-<p>Eigenvalues are roots of this polynomial in F. Hence, the goal of finding eigenvalues is equivalent to finding roots of degree <span class="math inline">\(n\)</span> polynomials in the field <span class="math inline">\(F\)</span>.</p>
-<p>Eigenvectors live in ker(T - lamda*I) = Eigenspace.</p>
-<p>Eigenvalues do not “mix”. Hence, we just find the basis of each eigenspace and union it together.</p>
+<section id="performing-diagonalization" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="performing-diagonalization"><span class="header-section-number">6.1.1</span> Performing Diagonalization</h3>
+<p>To perform diagonalization, we must first find the eigenvalues. We can do this through the determinant function which yeilds the following polynomial in the field <span class="math inline">\(F\)</span>:</p>
+<div class="box definition">
+<p><strong>(Characteristic Polynomial)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space over <span class="math inline">\(F\)</span> and let <span class="math inline">\(T:V\to V\)</span> be linear. Let <span class="math inline">\(A\)</span> be some matrix representation of <span class="math inline">\(T\)</span>, then the characteristic polynomial is:</p>
+<p><span class="math display">\[
+\chi_T(t)=\det(A-t I)
+\]</span></p>
+<ul>
+<li>See <a href="#charac_poly_COB_invariant">Proof</a> that <span class="math inline">\(\chi_T(t)\)</span> is invariant under change of basis and hence well defined for <span class="math inline">\(T\)</span>.</li>
+</ul>
+</div>
+<p>Eigenvalues are exactly the roots of this characteristic polynomial, a deeply algebraic object.</p>
 <div class="box theorem">
-<p><strong>(Distinct Eigenvalues Give Linearly Independent Eigenvectors)</strong> Let <span class="math inline">\(V\)</span> be a vector space over <span class="math inline">\(F\)</span> and let <span class="math inline">\(T:V\to V\)</span> be linear. Suppose <span class="math inline">\(\lambda_1,\dots,\lambda_k\in F\)</span> are distinct eigenvalues and <span class="math inline">\(\{v_1,\dots,v_k\}\)</span> are their corresponding eigenvectors. Then <span class="math inline">\(\{v_1,\dots,v_k\}\)</span> are linearly independent.</p>
+<p><strong>(Eigenvalue iff Characteristic Polynomial Root)</strong></p>
+<p>A scalar <span class="math inline">\(\lambda\in F\)</span> is an eigenvalue of <span class="math inline">\(T\)</span> iff <span class="math inline">\(\chi_T(\lambda)=0\)</span></p>
+<p>See <a href="#eigenval_are_charac_poly_roots_proof">Proof</a>.</p>
 </div>
-<p>But note that the converse of the above theorem is not true, the same eigenvalue can have linearly independent eigenvectors. Take any uniform scaling matrix as an example.</p>
+<p>Now that we’ve found an eigenvale <span class="math inline">\(\lambda\)</span>, we know the associated eigenspace <span class="math inline">\(E_\lambda\)</span> will have all the available eigenvectors. Hence finding a basis for <span class="math inline">\(E_\lambda\)</span> gives us the maximum possible linearly independent eigenvectors associated with <span class="math inline">\(\lambda\)</span>.</p>
+<p>The following theorem tells us that we can do the same procedure for different eigenvalues, and ensures that eigenspaces do not “overlap”. That is eigenspaces do not “mix”.</p>
+<div class="box theorem">
+<p><strong>(Eigenspaces Don’t Mix)</strong></p>
+<p>Let <span class="math inline">\(T:V\to V\)</span> be linear with <span class="math inline">\(\lambda_1,\dots,\lambda_k\in F\)</span> being distinct eigenvalues. Then the associated eigenspaces <span class="math inline">\(E_{\lambda_1}, \dots E_{\lambda_k}\)</span> are collectively linearly independent spaces.</p>
+<p>See <a href="#eigenspace_dont_mix_intuition">Intuition</a>. See <a href="#eigenspace_dont_mix_proof">Proof</a>.</p>
+</div>
 </section>
-<section id="diagonalization-guaranteed" class="level3">
-<h3 class="anchored" data-anchor-id="diagonalization-guaranteed">Diagonalization Guaranteed?</h3>
-<p>Now the natural question becomes - when is it possible to diagonalize an operator <span class="math inline">\(T\)</span>? The question is equivalent to asking, when are we guaranteed to have <span class="math inline">\(n\)</span> linearly independent eigenvectors?</p>
-<ul>
-<li>Potential issue 1: We need characteristic polynomial to have at least 1 eigenvalue.
-<ul>
-<li>When F = C this problem is solved by the fundamental theorem of algebra.</li>
-<li>Over R this is not automatically true.</li>
-</ul></li>
-</ul>
+<section id="diagonalization-guaranteed" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="diagonalization-guaranteed"><span class="header-section-number">6.1.2</span> Diagonalization Guaranteed?</h3>
+<p>Now the natural question becomes - is it always possible to diagonalize an operator <span class="math inline">\(T\)</span>? The question is equivalent to asking, when are we guaranteed to have <span class="math inline">\(n\)</span> linearly independent eigenvectors?</p>
+<section id="potential-problem-1-rotation-behaviours" class="level4" data-number="6.1.2.1">
+<h4 data-number="6.1.2.1" class="anchored" data-anchor-id="potential-problem-1-rotation-behaviours"><span class="header-section-number">6.1.2.1</span> Potential Problem 1: Rotation Behaviours</h4>
+<p>We needed the characteristic polynomial over the field <span class="math inline">\(F\)</span> to have at least 1 eigenvalue. When <span class="math inline">\(F = \mathbb{R}\)</span>, we know polynomials may not have real solutions. This situation corresponds exactly with rotations:</p>
 <div class="box">
-<p><span style="color: red;">Rotations in R^2 have complex eigenvalues</span>.</p>
+<p><span style="color: red;">Rotataion matrices cannot have real diagonalization viz, but has complex eigenvalues</span>.</p>
 </div>
+<p>Intuitively, scalar multiplication with real numbers are enough for scaling and reflecting but not rotation which is encoded through multiplication by complex numbers. Hence, rotation matrices are not diagonalizable over <span class="math inline">\(\mathbb{R}\)</span> but by the fundamental theorem of algebra, the characteristic polynomial always has at least <span class="math inline">\(1\)</span> solution.</p>
+<div class="box theorem">
+<p><strong>(Eigenvalue Existence)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be a nonzero finite-dimensional vector space over <span class="math inline">\(F\)</span> and <span class="math inline">\(T\)</span> a linear operator.</p>
 <ul>
-<li>Potential issue 2: Even if we have at least 1 eigenvalue, we may not have sufficient linearly independent eigenvectors. We need to ensure that eigenvalue contributes sufficient linearly independent eigenvectors to diagonalize <span class="math inline">\(T\)</span>. That is: <span class="math display">\[ \sum_{\{ \text{number of distinct eigenvalues} \}}{\operatorname{dim} \operatorname{ker} (T - \lambda_i I)}  = n \]</span></li>
+<li>If <span class="math inline">\(F = \mathbb{C}\)</span> and then <span class="math inline">\(T\)</span> has at least one eigenvalue in <span class="math inline">\(\mathbb{C}\)</span></li>
+<li>If <span class="math inline">\(F = \mathbb{R}\)</span> and then <span class="math inline">\(T\)</span> may not have any eigenvalues in <span class="math inline">\(\mathbb{R}\)</span> due to rotation transformations</li>
 </ul>
-<p>We start by asking, what is the maximum number of linearly independent eigenvectors a specific eigenvalue can contribute? This is the algebraic multiplicity:</p>
-<p>Over <span class="math inline">\(\mathbb{C}\)</span>, the algebraic multiplicity is always <span class="math inline">\(n\)</span>. Hence:</p>
-<div class="box">
-<p><span style="color: red;">T is diagonalizable iff geometric multiplicity = algebraic multiplicity theorem</span>.</p>
 </div>
-<p>The above theorem is the best we can do because unfortunately, linear transformations allow for geometric multiplicity &lt; algebraic multiplcity. These are exactly the “shearing” transformations:</p>
+<p>Hence, working in the right field that can express rotations via multiplication such as <span class="math inline">\(F = \mathbb{C}\)</span> eliminates this potential problem.</p>
+</section>
+<section id="potential-problem-2-shearing-behaviours" class="level4" data-number="6.1.2.2">
+<h4 data-number="6.1.2.2" class="anchored" data-anchor-id="potential-problem-2-shearing-behaviours"><span class="header-section-number">6.1.2.2</span> Potential Problem 2: Shearing Behaviours</h4>
+<p>Even if we have guaranteed existence of an eigenvalue, we need to ensure that each eigenvalue contributes sufficient linearly independent eigenvectors to diagonalize <span class="math inline">\(T\)</span>. That is: <span class="math display">\[ \sum_{\{ \lambda_is \}}{\operatorname{nullity} (E_{\lambda_i})}  = n = \operatorname{dim} V \]</span></p>
+<p>Unfortunately, this is where the dream of perfect diagonalization dies. Even over <span class="math inline">\(F = \mathbb{C}\)</span>, the above condition may not be true. Intuitively, this is exacty because of a linear operator can “shear” certain directions into other directions. Fundamentally, <span class="math inline">\(T\)</span> is not scaling these directions but adding another vector to them.</p>
 <div class="box">
 <p><span style="color: red;">Shearing in R^2</span>.</p>
 </div>
 </section>
+<section id="characterizing-diagonalizability-condition" class="level4" data-number="6.1.2.3">
+<h4 data-number="6.1.2.3" class="anchored" data-anchor-id="characterizing-diagonalizability-condition"><span class="header-section-number">6.1.2.3</span> Characterizing Diagonalizability Condition</h4>
+<p>Even if diagonalization is not always possible, we can at least characterize when it is gauranteed. The maximum number of linearly independent eigenvectors a specific eigenvalue can contribute is algebraically encoded in the characteristic polynomial.</p>
+<div class="box theorem">
+<p><strong>(Algebraic Multiplicity Bounds Geometric Multiplicity)</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be an <span class="math inline">\(n\)</span>-dimensional vector space over <span class="math inline">\(F\)</span> and let <span class="math inline">\(T:V\to V\)</span> be linear. Suppose the characteristic polynomial factors over <span class="math inline">\(F\)</span> as: <span class="math display">\[
+\chi_T(t)= (t-{\lambda_1})^{a_{\lambda_1}} \dots (t-{\lambda_k})^{a_{\lambda_k}} \text{ for } k \leq n
+\]</span></p>
+<p>The following bound holds:</p>
+<p><span class="math display">\[
+\underbrace{\operatorname{nullity}(\lambda_i)}_{\operatorname{GeoMult}(\lambda_i)} \leq \underbrace{a_{\lambda_i}}_{\operatorname{AlgMult}(\lambda_i)}
+\]</span></p>
+</div>
+<p>Over <span class="math inline">\(\mathbb{C}\)</span> by the fundamental theorem of algebra, the sum of all algebraic multiplicities is <span class="math inline">\(n = \operatorname{dim}V\)</span> which is how many linearly independent eigenvectors we need. Hence, for <span class="math inline">\(T\)</span> to be diagonalized, the geometric multiplicity must be maximally the algebraic multiplicity.</p>
+<div class="box theorem">
+<p><strong>(Diagonalizability Characterization)</strong></p>
+<p><span class="math inline">\(T\)</span> is diagonalizable iff for every eigenvalue <span class="math inline">\(\lambda_i\)</span>: <span class="math display">\[
+\operatorname{GeoMult}(\lambda_i) = \operatorname{AlgMult}(\lambda_i)
+\]</span></p>
+</div>
 </section>
-<section id="finite-dimensional-jordan-decomposition" class="level2">
-<h2 class="anchored" data-anchor-id="finite-dimensional-jordan-decomposition">Finite-Dimensional Jordan Decomposition</h2>
-<p>Why is this question requiring of finite dimensionality?</p>
 </section>
 </section>
-<section id="further-intuitions" class="level1">
-<h1>Further Intuitions</h1>
-<section id="lin_ind_intuition" class="level3">
-<h3 class="anchored" data-anchor-id="lin_ind_intuition">Linear Independence Characterisation</h3>
+<section id="finite-dimensional-jordan-decomposition" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="finite-dimensional-jordan-decomposition"><span class="header-section-number">6.2</span> Finite-Dimensional Jordan Decomposition</h2>
+<p>We found diagonalization to not always be possible due to “shearing” behaviours of linear transformations. Now …</p>
+</section>
+</section>
+<section id="proofs-and-intuitions" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Proofs and Intuitions</h1>
+<section id="lin_ind_intuition" class="level3" data-number="7.0.1">
+<h3 data-number="7.0.1" class="anchored" data-anchor-id="lin_ind_intuition"><span class="header-section-number">7.0.1</span> Linear Independence Intuition</h3>
 <p>This can be seen as beign able to take a path to 0. For linear independence, we have the following characterisation which is easier to check algebraically. Geometrically, it’s ensuring that there is only one way of getting to the <span class="math inline">\(0\)</span> vector.</p>
 </section>
-<section id="change_of_basis_working" class="level3">
-<h3 class="anchored" data-anchor-id="change_of_basis_working">Change of Basis Matrix</h3>
+<section id="change_of_basis_working" class="level3" data-number="7.0.2">
+<h3 data-number="7.0.2" class="anchored" data-anchor-id="change_of_basis_working"><span class="header-section-number">7.0.2</span> Change of Basis Matrix Example</h3>
 <p>Intuition on how to construct a change of basis matrix.</p>
 </section>
-<section id="diagonalize_working_example" class="level3">
-<h3 class="anchored" data-anchor-id="diagonalize_working_example">Diagonalization Example</h3>
+<section id="diagonalize_working_example" class="level3" data-number="7.0.3">
+<h3 data-number="7.0.3" class="anchored" data-anchor-id="diagonalize_working_example"><span class="header-section-number">7.0.3</span> Diagonalization Example</h3>
 <p>Worked example and process of diagonalization.</p>
-<div class="box definition">
-<p><strong>(Eigenvalue)</strong></p>
-<p>Let <span class="math inline">\(T:V\to V\)</span> be linear. A scalar <span class="math inline">\(\lambda\in F\)</span> is an eigenvalue of <span class="math inline">\(T\)</span> if there exists a nonzero vector <span class="math inline">\(v\in V\)</span> such that <span class="math inline">\(T(v)=\lambda v\)</span>.</p>
-</div>
-<p>This way I can continue to write while hte AI content is being generated.</p>
-<div class="box">
-<p><span style="color: red;">Placeholder</span>.</p>
-</div>
+</section>
+<section id="eigenval_are_charac_poly_roots_proof" class="level3" data-number="7.0.4">
+<h3 data-number="7.0.4" class="anchored" data-anchor-id="eigenval_are_charac_poly_roots_proof"><span class="header-section-number">7.0.4</span> Proof that Eigenvalues are Roots of <span class="math inline">\(\chi_T(t)\)</span></h3>
+</section>
+<section id="charac_poly_COB_invariant" class="level3" data-number="7.0.5">
+<h3 data-number="7.0.5" class="anchored" data-anchor-id="charac_poly_COB_invariant"><span class="header-section-number">7.0.5</span> Proof that <span class="math inline">\(\chi_T(t)\)</span> is Invariant</h3>
+</section>
+<section id="eigenspace_dont_mix_intuition" class="level3" data-number="7.0.6">
+<h3 data-number="7.0.6" class="anchored" data-anchor-id="eigenspace_dont_mix_intuition"><span class="header-section-number">7.0.6</span> Intuition for Eigenspaces not mixing</h3>
+</section>
+<section id="eigenspace_dont_mix_proof" class="level3" data-number="7.0.7">
+<h3 data-number="7.0.7" class="anchored" data-anchor-id="eigenspace_dont_mix_proof"><span class="header-section-number">7.0.7</span> Proof for Eigenspaces not mixing</h3>
 </section>
 </section>
 

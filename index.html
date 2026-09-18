@@ -101,6 +101,55 @@ body{
     font-size:16px;
     resize:vertical
 }
+
+#reference-fields{
+    display:none;
+}
+
+.reference-row{
+    display:flex;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.reference-row label{
+    width:70px;
+    font-family:monospace;
+    font-size:16px;
+}
+
+.reference-row input{
+    flex:1;
+    box-sizing:border-box;
+    padding:10px;
+    font-family:monospace;
+    font-size:16px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+.tag-input{
+    flex:1;
+    display:flex;
+    align-items:center;
+    border:1px solid #ccc;
+    border-radius:4px;
+    overflow:hidden;
+}
+
+.tag-input span{
+    padding-left:10px;
+    font-family:monospace;
+    font-size:16px;
+    color:#777;
+}
+
+.tag-input input{
+    border:none;
+    outline:none;
+    padding:10px;
+    width:100%;
+}
 </style>
 
 </head>
@@ -122,19 +171,45 @@ body{
 <div id="quarto-panel">
     <iframe id="quarto-frame"></iframe>
 </div>
-```
 
 </div>
 
 <div id="ai-prompt">
 
-```
-<textarea
-    id="ai-request"
-    rows="4"
-    placeholder="What should I insert?"
-></textarea>
-```
+    <div id="ai-prompt-content">
+
+        <textarea
+            id="ai-request"
+            rows="4"
+            placeholder="What should I insert?"
+        ></textarea>
+
+        <div id="reference-fields">
+
+            <div class="reference-row">
+                <label for="reference-heading">heading:</label>
+                <input
+                    id="reference-heading"
+                    type="text"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="reference-row">
+                <label for="reference-tag">tag:</label>
+                <div class="tag-input">
+                    <span>#</span>
+                    <input
+                        id="reference-tag"
+                        type="text"
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -368,6 +443,11 @@ document.addEventListener("keydown",event=>{
         event.preventDefault();
         insertPlaceholder();
     }
+
+    if(event.metaKey&&event.shiftKey&&event.key.toLowerCase()==="a"){
+        event.preventDefault();
+        addExampleReference();
+    }
 });
 
 function insertPlaceholder(){
@@ -393,6 +473,91 @@ function insertPlaceholder(){
     editor.focus();
 }
 
+function addExampleReference(){
+
+    const prompt=document.getElementById("ai-prompt");
+    const aiRequest=document.getElementById("ai-request");
+    const referenceFields=document.getElementById("reference-fields");
+
+    aiRequest.style.display="none";
+    referenceFields.style.display="block";
+
+    prompt.style.display="block";
+
+    const heading=document.getElementById("reference-heading");
+    const tag=document.getElementById("reference-tag");
+
+    heading.value="";
+    tag.value="";
+
+    heading.focus();
+
+
+    function submitReference(){
+
+        const headingText=heading.value.trim();
+        const tagText=tag.value.trim();
+
+        if(!headingText || !tagText){
+            return;
+        }
+
+        const link=`See [${headingText}](#${tagText})`;
+
+        const cursor=editor.getCursor();
+
+        editor.replaceRange(
+            link,
+            cursor
+        );
+
+        const lastLine=editor.lineCount()-1;
+
+        editor.replaceRange(
+            `\n\n### ${headingText}  {#${tagText}}\n`,
+            CodeMirror.Pos(
+                lastLine,
+                editor.getLine(lastLine).length
+            )
+        );
+
+        closeReferencePrompt();
+
+        editor.focus();
+    }
+
+
+    function handleKey(event){
+
+        if(event.key==="Enter"){
+            event.preventDefault();
+            submitReference();
+        }
+
+        if(event.key==="Escape"){
+            event.preventDefault();
+            closeReferencePrompt();
+        }
+    }
+
+
+    heading.onkeydown=handleKey;
+    tag.onkeydown=handleKey;
+
+}
+
+
+function closeReferencePrompt(){
+
+    document.getElementById("ai-prompt").style.display="none";
+
+    document.getElementById("reference-fields").style.display="none";
+
+    document.getElementById("ai-request").style.display="block";
+}
+
+
+
 /* --------------------------------------------------
    AI prompt
 -------------------------------------------------- */
@@ -416,11 +581,9 @@ function openAIPrompt(){
 
 
 function closeAIPrompt(){
-
-    document.getElementById(
-        "ai-prompt"
-    ).style.display="none";
-
+    document.getElementById("ai-prompt").style.display="none";
+    document.getElementById("reference-fields").style.display="none";
+    document.getElementById("ai-request").style.display="block";
 }
 
 
