@@ -2,3 +2,5 @@
 guide.txt
 .DS_Store
 __pycache__/
+venv
+jupyter_venv

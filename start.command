@@ -7,8 +7,10 @@ source venv/bin/activate
 uvicorn main:app --reload &
 FASTAPI_PID=$!
 
+source jupyter_venv/bin/activate
 python -m jupyterlab --no-browser --notebook-dir=experiments --config=jupyter_config.py &
 JUPYTER_PID=$!
+
 
 sleep 3
 
