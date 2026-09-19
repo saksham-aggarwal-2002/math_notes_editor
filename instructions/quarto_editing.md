@@ -141,7 +141,12 @@ requests one.
   expression.
 - Prefer standard LaTeX notation over Unicode mathematical symbols.
 - Keep generated content visually compact and readable.
-
+- Always use LaTeX for mathematical notation.
+- Use `$...$` for inline mathematics.
+- Use `$$...$$` for displayed mathematics.
+- Never write raw LaTeX commands outside math delimiters.
+- Use displayed mathematics for important equations or multi-line derivations.
+- Prefer standard LaTeX notation rather than Unicode mathematical symbols where practical.
 
 - Compress "if and only if" to "iff" in definitions and theorems.
 - No need for full stops or commas in displayed mathematical statements.

@@ -139,8 +139,7 @@ def quarto_version():
 def generate(data: Message):
 
     instructions = load_instructions([
-        "instructions/normal.md",
-        "instructions/quarto_editing.md",
+        "instructions/quarto_editing.md"
     ])
 
     with open(QMD_FILE, "r") as file:
