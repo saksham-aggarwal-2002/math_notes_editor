@@ -14,6 +14,8 @@ format:
 
 The goal here is to develop an algebraic theory for linear maps.
 
+
+
 # Vector Spaces and Linear Maps
 Vector space algebra codifes the flat "arrow" behaviour in Euclidean space (vector addition and scalar multiplication). They are not algebraically interesting themselves, but the minimal structure required to define linear maps.
 
@@ -636,6 +638,7 @@ This can be seen as beign able to take a path to 0. For linear independence, we 
 
 Intuition on how to construct a change of basis matrix.
 
+The interesting aspect of this 
 
 ### Diagonalization Example  {#diagonalize_working_example}
 

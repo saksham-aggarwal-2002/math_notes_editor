@@ -4,12 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
+from pathlib import Path
+
 
 import os
 import time
 import subprocess
 import threading
-
 
 load_dotenv()
 
@@ -20,8 +21,10 @@ app = FastAPI()
 app.mount("/notes", StaticFiles(directory="notes"), name="notes")
 app.mount("/styles", StaticFiles(directory="styles"), name="styles")
 
+IMAGE_DIR = Path("notes/images")
 QMD_FILE = "notes/linalg_1.qmd"
 HTML_FILE = "notes/linalg_1.html"
+
 
 
 def load_instructions(files):
@@ -84,10 +87,6 @@ class NotebookUpdate(BaseModel):
 def home():
     return FileResponse("index.html")
 
-@app.get("/config")
-def config():
-    return {"jupyter_port": JUPYTER_PORT}
-
 @app.get("/notebook")
 def notebook():
 
@@ -109,6 +108,24 @@ def save_notebook(data: NotebookUpdate):
         "success": True
     }
 
+@app.get("/images")
+def get_images():
+    IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+    images = []
+
+    for path in IMAGE_DIR.iterdir():
+        if path.is_file() and path.suffix.lower() in {
+            ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"
+        }:
+            images.append({
+                "name": path.name,
+                "modified": path.stat().st_mtime,
+            })
+
+    images.sort(key=lambda x: x["modified"], reverse=True)
+
+    return images
 
 @app.get("/quarto-version")
 def quarto_version():

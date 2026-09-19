@@ -37,14 +37,30 @@ body{
 }
 
 .toggle{
-    padding:6px 12px;
-    border:1px solid #ccc;
-    background:white;
+    padding:5px 13px;
+    border:1px solid transparent;
+    border-radius:5px;
+    background:transparent;
+    color:#666;
     cursor:pointer;
+    font-size:14px;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.toggle:hover{
+    background:#f3f3f3;
+    color:#333;
 }
 
 .toggle.active{
-    background:#eee;
+    background:#e8e8e8;
+    color:#111;
+    border-color:#d2d2d2;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+    font-weight:500;
 }
 
 #app{
@@ -186,6 +202,69 @@ body{
     padding:10px;
     width:100%;
 }
+
+#image-picker{
+    position:fixed;
+    top:20%;
+    left:50%;
+    transform:translateX(-50%);
+    width:600px;
+    max-height:60vh;
+    background:white;
+    border:1px solid #ccc;
+    border-radius:6px;
+    box-shadow:0 5px 30px rgba(0,0,0,.2);
+    display:none;
+    z-index:1000;
+    overflow:hidden;
+}
+
+#image-search{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    border:none;
+    border-bottom:1px solid #ddd;
+    outline:none;
+    font-family:sans-serif;
+    font-size:16px;
+}
+
+#image-list{
+    max-height:calc(60vh - 50px);
+    overflow-y:auto;
+}
+
+.image-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:10px 14px;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+}
+
+.image-item:hover,
+.image-item.selected{
+    background:#f0f0f0;
+}
+
+.image-thumbnail{
+    width:70px;
+    height:50px;
+    object-fit:contain;
+    border:1px solid #ddd;
+    background:white;
+}
+
+.image-name{
+    font-family:monospace;
+    font-size:14px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
 </style>
 
 </head>
@@ -259,6 +338,19 @@ body{
         </div>
 
     </div>
+
+</div>
+
+<div id="image-picker">
+
+    <input
+        id="image-search"
+        type="text"
+        placeholder="Search images..."
+        autocomplete="off"
+    >
+
+    <div id="image-list"></div>
 
 </div>
 
@@ -506,11 +598,23 @@ document.addEventListener("keydown",event=>{
     if(
         event.metaKey&&
         event.shiftKey&&
-        event.key.toLowerCase()==="a"
+        event.key.toLowerCase()==="o"
     ){
 
         event.preventDefault();
         addExampleReference();
+
+    }
+
+    if(
+    event.metaKey &&
+    event.shiftKey &&
+    event.key.toLowerCase()==="i"
+    ){
+
+        event.preventDefault();
+
+        openImagePicker();
 
     }
 
@@ -921,6 +1025,309 @@ function showPython(){
 
     document.getElementById("notes-button").classList.remove("active");
     document.getElementById("python-button").classList.add("active");
+
+}
+
+/* --------------------------------------------------
+   Image picker
+-------------------------------------------------- */
+
+let availableImages = [];
+let filteredImages = [];
+let selectedImageIndex = 0;
+
+
+/* --------------------------------------------------
+   Open image picker
+-------------------------------------------------- */
+
+async function openImagePicker(){
+
+    const picker =
+        document.getElementById("image-picker");
+
+    const search =
+        document.getElementById("image-search");
+
+    picker.style.display="block";
+
+    search.value="";
+
+    selectedImageIndex=0;
+
+    try{
+
+        const response =
+            await fetch("/images");
+
+        if(!response.ok){
+
+            throw new Error(
+                "Could not load images."
+            );
+
+        }
+
+        availableImages =
+            await response.json();
+
+        filteredImages =
+            [...availableImages];
+
+        renderImageList();
+
+        search.focus();
+
+    }catch(error){
+
+        alert("Could not load images.");
+
+        closeImagePicker();
+
+    }
+
+}
+
+
+/* --------------------------------------------------
+   Render image list
+-------------------------------------------------- */
+
+function renderImageList(){
+
+    const list =
+        document.getElementById("image-list");
+
+    list.innerHTML="";
+
+    if(filteredImages.length===0){
+
+        const empty =
+            document.createElement("div");
+
+        empty.style.padding="20px";
+        empty.style.color="#777";
+
+        empty.textContent="No images found.";
+
+        list.appendChild(empty);
+
+        return;
+
+    }
+
+
+    filteredImages.forEach((image,index)=>{
+
+        const item =
+            document.createElement("div");
+
+        item.className="image-item";
+
+        if(index===selectedImageIndex){
+
+            item.classList.add("selected");
+
+        }
+
+
+        const thumbnail =
+            document.createElement("img");
+
+        thumbnail.className="image-thumbnail";
+
+        thumbnail.src=
+            "/notes/images/" +
+            encodeURIComponent(image.name);
+
+
+        const name =
+            document.createElement("div");
+
+        name.className="image-name";
+
+        name.textContent=image.name;
+
+
+        item.appendChild(thumbnail);
+        item.appendChild(name);
+
+
+        item.onclick=()=>{
+
+            insertImage(image);
+
+        };
+
+
+        list.appendChild(item);
+
+    });
+
+}
+
+
+/* --------------------------------------------------
+   Insert image
+-------------------------------------------------- */
+
+function insertImage(image){
+
+    const cursor =
+        editor.getCursor();
+
+    const altText =
+        image.name
+            .replace(/\.[^/.]+$/, "")
+            .replace(/[-_]/g," ");
+
+    const markdown =
+    `::: {.text-center}\n` +
+    `![](images/${image.name})\n` +
+    `:::\n`;
+
+    editor.replaceRange(
+        markdown,
+        cursor
+    );
+
+    closeImagePicker();
+
+    editor.focus();
+
+}
+
+
+/* --------------------------------------------------
+   Close image picker
+-------------------------------------------------- */
+
+function closeImagePicker(){
+
+    document.getElementById(
+        "image-picker"
+    ).style.display="none";
+
+}
+
+
+/* --------------------------------------------------
+   Search images
+-------------------------------------------------- */
+
+document.getElementById("image-search")
+.addEventListener("input",event=>{
+
+    const query =
+        event.target.value
+            .toLowerCase()
+            .trim();
+
+    filteredImages =
+        availableImages.filter(image =>
+            image.name
+                .toLowerCase()
+                .includes(query)
+        );
+
+    selectedImageIndex=0;
+
+    renderImageList();
+
+});
+
+
+/* --------------------------------------------------
+   Image picker keyboard controls
+-------------------------------------------------- */
+
+document.getElementById("image-search")
+.addEventListener("keydown",event=>{
+
+    if(event.key==="Escape"){
+
+        event.preventDefault();
+
+        closeImagePicker();
+
+        editor.focus();
+
+        return;
+
+    }
+
+
+    if(event.key==="ArrowDown"){
+
+        event.preventDefault();
+
+        if(filteredImages.length===0)return;
+
+        selectedImageIndex =
+            Math.min(
+                selectedImageIndex+1,
+                filteredImages.length-1
+            );
+
+        renderImageList();
+
+        scrollSelectedImageIntoView();
+
+        return;
+
+    }
+
+
+    if(event.key==="ArrowUp"){
+
+        event.preventDefault();
+
+        if(filteredImages.length===0)return;
+
+        selectedImageIndex =
+            Math.max(
+                selectedImageIndex-1,
+                0
+            );
+
+        renderImageList();
+
+        scrollSelectedImageIntoView();
+
+        return;
+
+    }
+
+
+    if(event.key==="Enter"){
+
+        event.preventDefault();
+
+        if(filteredImages.length===0)return;
+
+        insertImage(
+            filteredImages[selectedImageIndex]
+        );
+
+    }
+
+});
+
+
+function scrollSelectedImageIntoView(){
+
+    const selected =
+        document.querySelector(
+            ".image-item.selected"
+        );
+
+    if(selected){
+
+        selected.scrollIntoView({
+            block:"nearest"
+        });
+
+    }
 
 }
 
