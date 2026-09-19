@@ -4,3 +4,5 @@ guide.txt
 __pycache__/
 venv
 jupyter_venv
+notes
+experiments
