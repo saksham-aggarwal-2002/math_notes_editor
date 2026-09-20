@@ -693,6 +693,29 @@ function insertPythonText(){
 /* --------------------------------------------------
    Example reference
 -------------------------------------------------- */
+function insertPlaceholder(){
+
+    const placeholder=`::: {.box}
+
+[content describing the placeholder]{style="color: red;"}.
+
+:::` + "\n";
+
+    const cursor=editor.getCursor();
+
+    editor.replaceRange(
+        placeholder,
+        cursor
+    );
+
+    editor.setCursor({
+        line:cursor.line+2,
+        ch:1
+    });
+
+    editor.focus();
+
+}
 
 function addExampleReference(){
 
