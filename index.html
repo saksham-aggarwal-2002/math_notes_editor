@@ -280,7 +280,7 @@ body{
 <div id="editor-panel">
 
     <div id="editor-header">
-        linalg_1.qmd
+        Loading subject...
     </div>
 
     <textarea id="editor"></textarea>
@@ -294,7 +294,7 @@ body{
 </div>
 
 <div id="python-view">
-    <iframe id="jupyter-frame" src="http://127.0.0.1:8890/lab/tree/linalg.ipynb"></iframe>
+    <iframe id="jupyter-frame"></iframe>
 </div>
 
 </div>
@@ -356,14 +356,28 @@ body{
 let editor;
 let saveTimer=null;
 let lastQuartoModified=null;
+let subjectConfig=null;
 
 
 /* --------------------------------------------------
    Initial Quarto preview
 -------------------------------------------------- */
 
-document.getElementById("quarto-frame").src=
-    "/notes/linalg_1.html?t="+Date.now();
+async function loadSubjectConfig(){
+
+    const response=await fetch("/subject-config");
+    subjectConfig=await response.json();
+
+    document.getElementById("editor-header").textContent=
+        subjectConfig.qmd;
+
+    document.getElementById("quarto-frame").src=
+        "/notes/" + encodeURIComponent(subjectConfig.html) + "?t=" + Date.now();
+
+    document.getElementById("jupyter-frame").src=
+        "http://127.0.0.1:8890/lab/tree/" +
+        encodeURIComponent(subjectConfig.notebook);
+}
 
 
 /* --------------------------------------------------
@@ -522,6 +536,7 @@ function saveNotebook(){
 }
 
 
+loadSubjectConfig();
 loadNotebook();
 
 
@@ -1088,6 +1103,12 @@ async function generateAtCursor(){
 
 async function checkQuarto(){
 
+    if(!subjectConfig){
+
+        return;
+
+    }
+
     try{
 
         const response=
@@ -1144,7 +1165,7 @@ async function checkQuarto(){
 
 
             frame.src=
-                "/notes/linalg_1.html?t="+Date.now();
+                "/notes/" + encodeURIComponent(subjectConfig.html) + "?t=" + Date.now();
 
 
             frame.onload=()=>{
@@ -1325,7 +1346,7 @@ function renderImageList(){
         thumbnail.className="image-thumbnail";
 
         thumbnail.src=
-            "/notes/images/" +
+            "/subject-images/" +
             encodeURIComponent(image.name);
 
 

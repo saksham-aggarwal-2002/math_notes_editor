@@ -14,13 +14,37 @@ import threading
 
 load_dotenv()
 
+SUBJECT_DIR = Path(os.environ["SUBJECT_DIR"])
+NOTES_DIR = SUBJECT_DIR / "notes"
+EXPERIMENTS_DIR = SUBJECT_DIR / "experiments"
+
+
+def find_subject_file(directory, suffix):
+
+    files = sorted(directory.glob(f"*{suffix}"))
+
+    if len(files) != 1:
+
+        raise RuntimeError(
+            f"Expected exactly one {suffix} file in {directory}, found {len(files)}."
+        )
+
+    return files[0]
+
+
+QMD_FILE = find_subject_file(NOTES_DIR, ".qmd")
+HTML_FILE = QMD_FILE.with_suffix(".html")
+NOTEBOOK_FILE = find_subject_file(EXPERIMENTS_DIR, ".ipynb")
+IMAGE_DIR = NOTES_DIR / "images"
+IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
 client = OpenAI()
 app = FastAPI()
 
 
 app.mount(
     "/notes",
-    StaticFiles(directory="notes"),
+    StaticFiles(directory=str(NOTES_DIR)),
     name="notes"
 )
 
@@ -30,10 +54,11 @@ app.mount(
     name="styles"
 )
 
-
-IMAGE_DIR = Path("notes/images")
-QMD_FILE = "notes/linalg_1.qmd"
-HTML_FILE = "notes/linalg_1.html"
+app.mount(
+    "/subject-images",
+    StaticFiles(directory=str(IMAGE_DIR)),
+    name="subject-images"
+)
 
 
 def load_instructions(files):
@@ -115,6 +140,16 @@ def notebook():
 
     return {
         "content": content
+    }
+
+
+@app.get("/subject-config")
+def subject_config():
+
+    return {
+        "qmd": QMD_FILE.name,
+        "html": HTML_FILE.name,
+        "notebook": NOTEBOOK_FILE.name,
     }
 
 
@@ -253,7 +288,7 @@ def generate_python(data: Message):
         "instructions/python_editing.md"
     ])
 
-    with open("experiments/linalg.ipynb", "r") as file:
+    with open(NOTEBOOK_FILE, "r") as file:
         notebook = file.read()
 
     prompt = f"""
