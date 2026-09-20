@@ -6,3 +6,4 @@ venv
 jupyter_venv
 notes
 experiments
+jupyter_extension/node_modules

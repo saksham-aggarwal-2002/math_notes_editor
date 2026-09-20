@@ -375,18 +375,6 @@ CodeMirror.registerHelper("fold","quarto",function(cm,start){
     const line=start.line;
     const text=cm.getLine(line);
 
-    /*
-       Quarto ::: blocks
-
-       Example:
-
-       ::: {.box .definition}
-
-       content
-
-       :::
-    */
-
     if(/^\s*:::\s*/.test(text)){
 
         for(let i=line+1;i<cm.lineCount();i++){
@@ -407,18 +395,6 @@ CodeMirror.registerHelper("fold","quarto",function(cm,start){
 
         return;
     }
-
-
-    /*
-       Markdown headings
-
-       # Heading
-       ## Heading
-       ### Heading
-
-       A heading folds everything until the
-       next heading of the same or higher level.
-    */
 
     if(/^\s*#{1,6}\s+/.test(text)){
 
@@ -448,11 +424,6 @@ CodeMirror.registerHelper("fold","quarto",function(cm,start){
             }
 
         }
-
-        /*
-           If this is the final heading,
-           fold through the end of the document.
-        */
 
         return {
             from:CodeMirror.Pos(line,text.length),
@@ -486,15 +457,6 @@ async function loadNotebook(){
 
             lineWrapping:true,
 
-            /*
-               Use our custom folding function.
-
-               This handles BOTH:
-
-               Markdown headings
-               Quarto ::: blocks
-            */
-
             foldGutter:{
                 rangeFinder:function(cm,start){
 
@@ -516,7 +478,6 @@ async function loadNotebook(){
 
     editor.setValue(data.content);
 
-    // Collapse all top-level (#) sections
     for(let i=0;i<editor.lineCount();i++){
 
         if(/^#\s+/.test(editor.getLine(i))){
@@ -571,19 +532,32 @@ loadNotebook();
 document.addEventListener("keydown",event=>{
 
     if(
-        event.metaKey&&
-        event.shiftKey&&
+        event.metaKey &&
+        event.shiftKey &&
         event.key.toLowerCase()==="l"
     ){
 
         event.preventDefault();
-        openAIPrompt();
+
+        if(
+            document.getElementById("python-view")
+            .style.display==="block"
+        ){
+
+            openPythonAIPrompt();
+
+        }else{
+
+            openAIPrompt();
+
+        }
 
     }
 
+
     if(
-        event.metaKey&&
-        event.shiftKey&&
+        event.metaKey &&
+        event.shiftKey &&
         event.key.toLowerCase()==="p"
     ){
 
@@ -592,9 +566,10 @@ document.addEventListener("keydown",event=>{
 
     }
 
+
     if(
-        event.metaKey&&
-        event.shiftKey&&
+        event.metaKey &&
+        event.shiftKey &&
         event.key.toLowerCase()==="o"
     ){
 
@@ -603,14 +578,14 @@ document.addEventListener("keydown",event=>{
 
     }
 
+
     if(
-    event.metaKey &&
-    event.shiftKey &&
-    event.key.toLowerCase()==="i"
+        event.metaKey &&
+        event.shiftKey &&
+        event.key.toLowerCase()==="i"
     ){
 
         event.preventDefault();
-
         openImagePicker();
 
     }
@@ -618,30 +593,106 @@ document.addEventListener("keydown",event=>{
 });
 
 
-function insertPlaceholder(){
+/* --------------------------------------------------
+   Python AI prompt
+-------------------------------------------------- */
 
-    const placeholder=`::: {.box}
+function openPythonAIPrompt(){
 
-[content describing the placeholder]{style="color: red;"}.
+    const prompt =
+        document.getElementById("ai-prompt");
 
-:::` + "\n";
+    const input =
+        document.getElementById("ai-request");
 
-    const cursor=editor.getCursor();
+    prompt.style.display="block";
 
-    editor.replaceRange(
-        placeholder,
-        cursor
-    );
+    input.value="";
 
-    editor.setCursor({
-        line:cursor.line+2,
-        ch:1
-    });
+    input.placeholder=
+        "What Python code should I insert?";
 
-    editor.focus();
+    input.focus();
 
 }
 
+
+/* --------------------------------------------------
+   Messages from JupyterLab
+-------------------------------------------------- */
+
+window.addEventListener("message",event=>{
+
+    if(
+        event.origin!=="http://127.0.0.1:8890"
+    ){
+
+        return;
+
+    }
+
+    if(
+        !event.data ||
+        event.data.type!=="mathai-open-python-prompt"
+    ){
+
+        return;
+
+    }
+
+    openPythonAIPrompt();
+
+});
+
+
+/* --------------------------------------------------
+   Insert text into JupyterLab
+-------------------------------------------------- */
+
+function insertTextIntoJupyter(text){
+
+    const frame =
+        document.getElementById("jupyter-frame");
+
+    frame.contentWindow.postMessage(
+        {
+            type:"mathai-insert-text",
+            text:text
+        },
+        "http://127.0.0.1:8890"
+    );
+
+}
+
+
+/* --------------------------------------------------
+   Insert Python text
+-------------------------------------------------- */
+
+function insertPythonText(){
+
+    const input =
+        document.getElementById("ai-request");
+
+    const text =
+        input.value.trim();
+
+    if(!text){
+
+        return;
+
+    }
+
+    closeAIPrompt();
+
+    insertTextIntoJupyter(text);
+
+}
+
+
+/* --------------------------------------------------
+   Example reference
+-------------------------------------------------- */
 
 function addExampleReference(){
 
@@ -742,15 +793,18 @@ function closeReferencePrompt(){
 
 function openAIPrompt(){
 
-    const prompt=
+    const prompt =
         document.getElementById("ai-prompt");
+
+    const input =
+        document.getElementById("ai-request");
 
     prompt.style.display="block";
 
-    const input=
-        document.getElementById("ai-request");
-
     input.value="";
+
+    input.placeholder=
+        "What should I insert?";
 
     input.focus();
 
@@ -778,7 +832,18 @@ document.getElementById("ai-request")
 
         event.preventDefault();
 
-        generateAtCursor();
+        const pythonView =
+            document.getElementById("python-view");
+
+        if(pythonView.style.display==="block"){
+
+            insertPythonText();
+
+        }else{
+
+            generateAtCursor();
+
+        }
 
     }
 
@@ -1025,6 +1090,7 @@ function showPython(){
 
 }
 
+
 /* --------------------------------------------------
    Image picker
 -------------------------------------------------- */
@@ -1172,11 +1238,6 @@ function insertImage(image){
 
     const cursor =
         editor.getCursor();
-
-    const altText =
-        image.name
-            .replace(/\.[^/.]+$/, "")
-            .replace(/[-_]/g," ");
 
     const markdown =
     `::: {.text-center}\n` +

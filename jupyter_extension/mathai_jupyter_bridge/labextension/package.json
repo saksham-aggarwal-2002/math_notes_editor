@@ -1,0 +1,33 @@
+{
+  "name": "mathai-jupyter-bridge",
+  "version": "0.1.0",
+  "description": "Bridge between MathAI and JupyterLab",
+  "keywords": [
+    "jupyter",
+    "jupyterlab"
+  ],
+  "license": "MIT",
+  "author": "MathAI",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc && jupyter-builder build --development True .",
+    "clean": "rm -rf lib mathai_jupyter_bridge/labextension"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^4.6.3",
+    "@jupyterlab/notebook": "^4.6.3"
+  },
+  "devDependencies": {
+    "@jupyter/builder": "^1.0.0",
+    "typescript": "~5.9.3"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "mathai_jupyter_bridge/labextension",
+    "_build": {
+      "load": "static/remoteEntry.f30c5589ef7a956c.js",
+      "extension": "./extension"
+    }
+  }
+}

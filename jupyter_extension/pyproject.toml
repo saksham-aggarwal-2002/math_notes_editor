@@ -1,0 +1,34 @@
+[build-system]
+requires = [
+    "hatchling>=1.5.0",
+    "hatch-jupyter-builder>=0.5"
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "mathai-jupyter-bridge"
+version = "0.1.0"
+description = "Bridge between MathAI and JupyterLab"
+requires-python = ">=3.9"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mathai_jupyter_bridge"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"mathai_jupyter_bridge/labextension" = "share/jupyter/labextensions/mathai-jupyter-bridge"
+
+[tool.hatch.build.targets.sdist]
+artifacts = [
+    "mathai_jupyter_bridge/labextension"
+]
+
+[tool.hatch.build.hooks.jupyter-builder]
+dependencies = [
+    "hatch-jupyter-builder>=0.5"
+]
+
+[tool.hatch.build.hooks.jupyter-builder.build-kwargs]
+build_cmd = "build"
+
+[tool.hatch.build.hooks.jupyter-builder.editable-build-kwargs]
+build_cmd = "build"
