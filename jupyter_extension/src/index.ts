@@ -61,11 +61,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
     /*
-     * Store the cell that initiated each AI request.
+     * Store the placeholder cell associated
+     * with each AI request.
      *
-     * The cell object itself is stored rather than its
-     * index, because cells can be inserted or deleted
-     * while the AI request is running.
+     * The cell object is stored rather than
+     * its index, because cells can be inserted
+     * or deleted while the AI request is running.
      */
 
     const pendingCells =
@@ -131,11 +132,68 @@ const plugin: JupyterFrontEndPlugin<void> = {
               crypto.randomUUID();
 
 
-            pendingCells.set(
-              requestId,
-              cell
+            /*
+             * Make sure the current cell is active.
+             */
+
+            notebook.activeCellIndex =
+              notebook.widgets.indexOf(cell);
+
+
+            /*
+             * Immediately create a new cell below
+             * the current cell.
+             */
+
+            NotebookActions.insertBelow(
+              notebook
             );
 
+
+            const placeholderCell =
+              notebook.activeCell;
+
+
+            if (!placeholderCell) {
+
+              console.error(
+                'MathAI: could not create placeholder cell.'
+              );
+
+              return;
+
+            }
+
+
+            /*
+             * Show the placeholder while the AI
+             * request is running.
+             */
+
+            placeholderCell.model.sharedModel.setSource(
+              '<!-- AI_GENERATING -->'
+            );
+
+
+            /*
+             * Store the placeholder cell itself.
+             *
+             * This lets us replace exactly this cell
+             * when the AI response arrives, regardless
+             * of what happens to the notebook in the
+             * meantime.
+             */
+
+            pendingCells.set(
+              requestId,
+              placeholderCell
+            );
+
+
+            /*
+             * Tell the parent MathAI application
+             * to open the Python prompt.
+             */
 
             window.parent.postMessage(
               {
@@ -194,8 +252,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
         /*
-         * Insert AI-generated Python below the
-         * cell that originally started the request.
+         * Replace the placeholder cell with
+         * AI-generated Python.
          */
 
         if (
@@ -227,7 +285,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           }
 
 
-          const originalCell =
+          const placeholderCell =
             pendingCells.get(
               requestId
             );
@@ -238,7 +296,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
           );
 
 
-          if (!originalCell) {
+          if (!placeholderCell) {
 
             sendToMathAI({
 
@@ -252,7 +310,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
                 requestId,
 
               error:
-                'The original notebook cell could not be found.'
+                'The AI placeholder cell could not be found.'
 
             });
 
@@ -275,76 +333,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
             }
 
 
-            const panel =
-              tracker.currentWidget;
-
-
-            if (!panel) {
-
-              throw new Error(
-                'No notebook is currently open.'
-              );
-
-            }
-
-
-            const notebook =
-              panel.content;
-
-
             /*
-             * Find the original cell again.
-             *
-             * This gives us its current position even
-             * if cells were added while the AI request
-             * was running.
+             * Replace the placeholder with
+             * the generated Python.
              */
 
-            const cellIndex =
-              notebook.widgets.indexOf(
-                originalCell
-              );
-
-
-            if (cellIndex < 0) {
-
-              throw new Error(
-                'The original cell no longer exists.'
-              );
-
-            }
-
-
-            /*
-             * Make the original cell active.
-             *
-             * NotebookActions.insertBelow()
-             * inserts relative to the active cell.
-             */
-
-            notebook.activeCellIndex =
-              cellIndex;
-
-
-            NotebookActions.insertBelow(
-              notebook
-            );
-
-
-            const newCell =
-              notebook.activeCell;
-
-
-            if (!newCell) {
-
-              throw new Error(
-                'Could not access the new cell.'
-              );
-
-            }
-
-
-            newCell.model.sharedModel.setSource(
+            placeholderCell.model.sharedModel.setSource(
               message.text
             );
 

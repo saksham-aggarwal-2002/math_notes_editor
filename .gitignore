@@ -6,4 +6,7 @@ venv
 jupyter_venv
 notes
 experiments
-jupyter_extension/node_modules
+jupyter_extension/node_modules/
+jupyter_extension/lib/
+jupyter_extension/mathai_jupyter_bridge/labextension/
+jupyter_extension/tsconfig.tsbuildinfo

@@ -253,8 +253,19 @@ def generate_python(data: Message):
         "instructions/python_editing.md"
     ])
 
+    with open("experiments/linalg.ipynb", "r") as file:
+        notebook = file.read()
+
     prompt = f"""
 {instructions}
+
+Here is the current Jupyter notebook:
+
+--- BEGIN NOTEBOOK ---
+
+{notebook}
+
+--- END NOTEBOOK ---
 
 The user's request is:
 
