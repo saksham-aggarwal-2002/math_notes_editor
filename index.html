@@ -597,7 +597,7 @@ document.addEventListener("keydown",event=>{
    Python AI prompt
 -------------------------------------------------- */
 
-function openPythonAIPrompt(){
+function openPythonAIPrompt(requestId){
 
     const prompt =
         document.getElementById("ai-prompt");
@@ -611,6 +611,9 @@ function openPythonAIPrompt(){
 
     input.placeholder=
         "What Python code should I insert?";
+
+    prompt.dataset.pythonRequestId =
+        requestId || "";
 
     input.focus();
 
@@ -631,6 +634,7 @@ window.addEventListener("message",event=>{
 
     }
 
+
     if(
         !event.data ||
         event.data.type!=="mathai-open-python-prompt"
@@ -640,7 +644,10 @@ window.addEventListener("message",event=>{
 
     }
 
-    openPythonAIPrompt();
+
+    openPythonAIPrompt(
+        event.data.requestId
+    );
 
 });
 
@@ -649,15 +656,27 @@ window.addEventListener("message",event=>{
    Insert text into JupyterLab
 -------------------------------------------------- */
 
-function insertTextIntoJupyter(text){
+function insertTextIntoJupyter(
+    text,
+    requestId
+){
 
     const frame =
-        document.getElementById("jupyter-frame");
+        document.getElementById(
+            "jupyter-frame"
+        );
+
 
     frame.contentWindow.postMessage(
         {
-            type:"mathai-insert-text",
-            text:text
+            type:
+                "mathai-insert-text",
+
+            text:
+                text,
+
+            requestId:
+                requestId
         },
         "http://127.0.0.1:8890"
     );
@@ -669,23 +688,106 @@ function insertTextIntoJupyter(text){
    Insert Python text
 -------------------------------------------------- */
 
-function insertPythonText(){
+async function insertPythonText(){
 
     const input =
         document.getElementById("ai-request");
 
-    const text =
+    const request =
         input.value.trim();
 
-    if(!text){
+    if(!request){
 
         return;
 
     }
 
+
+    const prompt =
+        document.getElementById("ai-prompt");
+
+    const requestId =
+        prompt.dataset.pythonRequestId;
+
+
+    if(!requestId){
+
+        alert(
+            "Could not identify the notebook cell."
+        );
+
+        return;
+
+    }
+
+
     closeAIPrompt();
 
-    insertTextIntoJupyter(text);
+
+    try{
+
+        const response =
+            await fetch(
+                "/ai/generate-python",
+                {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+                        message:request
+                    })
+
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "AI request failed."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !data.content
+        ){
+
+            throw new Error(
+                "AI returned no content."
+            );
+
+        }
+
+
+        insertTextIntoJupyter(
+            data.content,
+            requestId
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Python AI generation failed:",
+            error
+        );
+
+        alert(
+            "AI generation failed."
+        );
+
+    }
 
 }
 

@@ -116,7 +116,7 @@ __webpack_require__.u = (chunkId) => {
   // return url for filenames not based on template
   
   // return url for filenames based on template
-  return "" + chunkId + "." + "67186a4967e68aa7" + ".js"
+  return "" + chunkId + "." + "078063cb84759b48" + ".js"
 }
 })();
 // webpack/runtime/global
@@ -968,4 +968,4 @@ var __webpack_exports__ = __webpack_require__("webpack/container/entry/mathai-ju
 (_JUPYTERLAB = typeof _JUPYTERLAB === 'undefined' ? {} : _JUPYTERLAB)["mathai-jupyter-bridge"] = __webpack_exports__;
 })()
 ;
-//# sourceMappingURL=remoteEntry.f30c5589ef7a956c.js.map
+//# sourceMappingURL=remoteEntry.3e4e4b5712811cee.js.map

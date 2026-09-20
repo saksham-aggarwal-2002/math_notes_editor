@@ -12,6 +12,7 @@ import {
 interface MathAIMessage {
   type: string;
   text?: string;
+  requestId?: string;
 }
 
 
@@ -19,6 +20,7 @@ interface MathAIResponse {
   type: string;
   success: boolean;
   error?: string;
+  requestId?: string;
 }
 
 
@@ -59,11 +61,19 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
     /*
-     * Cmd+Shift+L
+     * Store the cell that initiated each AI request.
      *
-     * Listen during the capture phase so that
-     * JupyterLab's own keyboard handling does not
-     * prevent us from seeing the event.
+     * The cell object itself is stored rather than its
+     * index, because cells can be inserted or deleted
+     * while the AI request is running.
+     */
+
+    const pendingCells =
+      new Map<string, any>();
+
+
+    /*
+     * Cmd+Shift+L
      */
 
     document.addEventListener(
@@ -81,13 +91,72 @@ const plugin: JupyterFrontEndPlugin<void> = {
           event.stopPropagation();
 
 
-          window.parent.postMessage(
-            {
-              type:
-                'mathai-open-python-prompt'
-            },
-            MATHAI_ORIGIN
-          );
+          try {
+
+            const panel =
+              tracker.currentWidget;
+
+
+            if (!panel) {
+
+              console.error(
+                'MathAI: no notebook is open.'
+              );
+
+              return;
+
+            }
+
+
+            const notebook =
+              panel.content;
+
+
+            const cell =
+              notebook.activeCell;
+
+
+            if (!cell) {
+
+              console.error(
+                'MathAI: no active cell.'
+              );
+
+              return;
+
+            }
+
+
+            const requestId =
+              crypto.randomUUID();
+
+
+            pendingCells.set(
+              requestId,
+              cell
+            );
+
+
+            window.parent.postMessage(
+              {
+                type:
+                  'mathai-open-python-prompt',
+
+                requestId:
+                  requestId
+              },
+              MATHAI_ORIGIN
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              'MathAI: could not prepare AI request:',
+              error
+            );
+
+          }
 
         }
 
@@ -117,120 +186,214 @@ const plugin: JupyterFrontEndPlugin<void> = {
           event.data as MathAIMessage;
 
 
-        if (
-          !message ||
-          message.type !==
-            'mathai-insert-text'
-        ) {
+        if (!message) {
 
           return;
 
         }
 
 
-        try {
+        /*
+         * Insert AI-generated Python below the
+         * cell that originally started the request.
+         */
+
+        if (
+          message.type ===
+          'mathai-insert-text'
+        ) {
+
+          const requestId =
+            message.requestId;
 
 
-          if (
-            typeof message.text !==
-            'string'
-          ) {
+          if (!requestId) {
 
-            throw new Error(
-              'No text was provided.'
-            );
+            sendToMathAI({
 
-          }
+              type:
+                'mathai-insert-result',
 
+              success:
+                false,
 
-          const panel =
-            tracker.currentWidget;
+              error:
+                'No request ID was provided.'
 
+            });
 
-          if (!panel) {
-
-            throw new Error(
-              'No notebook is currently open.'
-            );
-
-          }
-
-
-          const notebook =
-            panel.content;
-
-
-          if (
-            notebook.activeCellIndex < 0
-          ) {
-
-            throw new Error(
-              'No active cell.'
-            );
+            return;
 
           }
 
 
-          /*
-           * Create a new code cell immediately
-           * below the active cell.
-           */
+          const originalCell =
+            pendingCells.get(
+              requestId
+            );
 
-          NotebookActions.insertBelow(
-            notebook
+
+          pendingCells.delete(
+            requestId
           );
 
 
-          const newCell =
-            notebook.activeCell;
+          if (!originalCell) {
 
+            sendToMathAI({
 
-          if (!newCell) {
+              type:
+                'mathai-insert-result',
 
-            throw new Error(
-              'Could not access the new cell.'
-            );
+              success:
+                false,
+
+              requestId:
+                requestId,
+
+              error:
+                'The original notebook cell could not be found.'
+
+            });
+
+            return;
 
           }
 
 
-          newCell.model.sharedModel.setSource(
-            message.text
-          );
+          try {
+
+            if (
+              typeof message.text !==
+              'string'
+            ) {
+
+              throw new Error(
+                'No text was provided.'
+              );
+
+            }
 
 
-          sendToMathAI({
-
-            type:
-              'mathai-insert-result',
-
-            success: true
-
-          });
+            const panel =
+              tracker.currentWidget;
 
 
-        } catch (error) {
+            if (!panel) {
+
+              throw new Error(
+                'No notebook is currently open.'
+              );
+
+            }
 
 
-          console.error(
-            'MathAI insertion failed:',
-            error
-          );
+            const notebook =
+              panel.content;
 
 
-          sendToMathAI({
+            /*
+             * Find the original cell again.
+             *
+             * This gives us its current position even
+             * if cells were added while the AI request
+             * was running.
+             */
 
-            type:
-              'mathai-insert-result',
+            const cellIndex =
+              notebook.widgets.indexOf(
+                originalCell
+              );
 
-            success: false,
 
-            error:
-              String(error)
+            if (cellIndex < 0) {
 
-          });
+              throw new Error(
+                'The original cell no longer exists.'
+              );
+
+            }
+
+
+            /*
+             * Make the original cell active.
+             *
+             * NotebookActions.insertBelow()
+             * inserts relative to the active cell.
+             */
+
+            notebook.activeCellIndex =
+              cellIndex;
+
+
+            NotebookActions.insertBelow(
+              notebook
+            );
+
+
+            const newCell =
+              notebook.activeCell;
+
+
+            if (!newCell) {
+
+              throw new Error(
+                'Could not access the new cell.'
+              );
+
+            }
+
+
+            newCell.model.sharedModel.setSource(
+              message.text
+            );
+
+
+            sendToMathAI({
+
+              type:
+                'mathai-insert-result',
+
+              success:
+                true,
+
+              requestId:
+                requestId
+
+            });
+
+
+          } catch (error) {
+
+            console.error(
+              'MathAI insertion failed:',
+              error
+            );
+
+
+            sendToMathAI({
+
+              type:
+                'mathai-insert-result',
+
+              success:
+                false,
+
+              requestId:
+                requestId,
+
+              error:
+                String(error)
+
+            });
+
+          }
+
+
+          return;
 
         }
+
 
       }
     );

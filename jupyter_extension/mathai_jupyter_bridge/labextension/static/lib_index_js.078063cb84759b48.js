@@ -1,4 +1,13 @@
-import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
+"use strict";
+(self["rspackChunkmathai_jupyter_bridge"] = self["rspackChunkmathai_jupyter_bridge"] || []).push([["lib_index_js"], {
+"./lib/index.js"(__unused_rspack_module, __webpack_exports__, __webpack_require__) {
+__webpack_require__.r(__webpack_exports__);
+__webpack_require__.d(__webpack_exports__, {
+  "default": () => (__rspack_default_export)
+});
+/* import */ var _jupyterlab_notebook__rspack_import_0 = __webpack_require__("webpack/sharing/consume/default/@jupyterlab/notebook");
+/* import */ var _jupyterlab_notebook__rspack_import_0_default = /*#__PURE__*/__webpack_require__.n(_jupyterlab_notebook__rspack_import_0);
+
 const MATHAI_ORIGIN = 'http://127.0.0.1:8000';
 function sendToMathAI(response) {
     window.parent.postMessage(response, MATHAI_ORIGIN);
@@ -7,7 +16,7 @@ const plugin = {
     id: 'mathai-jupyter-bridge',
     description: 'Bridge between MathAI and JupyterLab.',
     autoStart: true,
-    requires: [INotebookTracker],
+    requires: [_jupyterlab_notebook__rspack_import_0.INotebookTracker],
     activate: (app, tracker) => {
         console.log('MathAI Jupyter bridge loaded.');
         /*
@@ -117,7 +126,7 @@ const plugin = {
                      */
                     notebook.activeCellIndex =
                         cellIndex;
-                    NotebookActions.insertBelow(notebook);
+                    _jupyterlab_notebook__rspack_import_0.NotebookActions.insertBelow(notebook);
                     const newCell = notebook.activeCell;
                     if (!newCell) {
                         throw new Error('Could not access the new cell.');
@@ -143,5 +152,10 @@ const plugin = {
         });
     }
 };
-export default plugin;
-//# sourceMappingURL=index.js.map
+/* export default */ const __rspack_default_export = (plugin);
+
+
+},
+
+}]);
+//# sourceMappingURL=lib_index_js.078063cb84759b48.js.map
