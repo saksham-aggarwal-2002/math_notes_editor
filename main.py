@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 import os
+import json
 import time
 import subprocess
 import threading
@@ -50,7 +51,7 @@ app.mount(
 
 app.mount(
     "/styles",
-    StaticFiles(directory="styles"),
+    StaticFiles(directory=str(SUBJECT_DIR / "styles")),
     name="styles"
 )
 
@@ -289,16 +290,22 @@ def generate_python(data: Message):
     ])
 
     with open(NOTEBOOK_FILE, "r") as file:
-        notebook = file.read()
+        notebook = json.load(file)
+
+    python_code = "\n\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook.get("cells", [])
+        if cell.get("cell_type") == "code"
+    )
 
     prompt = f"""
 {instructions}
 
-Here is the current Jupyter notebook:
+Here is the Python code currently in the Jupyter notebook:
 
 --- BEGIN NOTEBOOK ---
 
-{notebook}
+{python_code}
 
 --- END NOTEBOOK ---
 
