@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-SUBJECT_DIR="/Users/sakshamaggarwal/Local_storage/subjects"
+SUBJECT_DIR="/Users/sakshamaggarwal/Local_storage/subjects/linalg"
 export SUBJECT_DIR
 
 source venv/bin/activate
