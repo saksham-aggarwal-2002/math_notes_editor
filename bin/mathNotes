@@ -1,25 +1,39 @@
 #!/bin/bash
 
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+    SCRIPT_PATH="$(readlink "$SCRIPT_PATH")"
+
+    if [[ "$SCRIPT_PATH" != /* ]]; then
+        SCRIPT_PATH="$SCRIPT_DIR/$SCRIPT_PATH"
+    fi
+done
+
+SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+
 SUBJECT_DIR="/Users/sakshamaggarwal/Local_storage/subjects/linalg"
 export SUBJECT_DIR
 
-MATHAI_DIR="/Users/sakshamaggarwal/Local_storage/mathAI"
-MATHAI_PYTHON="$MATHAI_DIR/venv/bin/python"
+MATH_NOTES_EDITOR_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+MATH_NOTES_EDITOR_PYTHON="$MATH_NOTES_EDITOR_DIR/venv/bin/python"
 
-cd "$MATHAI_DIR"
+cd "$MATH_NOTES_EDITOR_DIR"
 
-"$MATHAI_PYTHON" -m uvicorn main:app --reload &
+"$MATH_NOTES_EDITOR_PYTHON" -m uvicorn main:app --reload &
 FASTAPI_PID=$!
 
 JUPYTER_PORT=8890
 
-export JUPYTER_PATH="$SUBJECT_DIR/experiments"
+export JUPYTER_PATH="$MATH_NOTES_EDITOR_DIR/jupyter_extension/build/jupyter_data:$SUBJECT_DIR/experiments"
 
 "$SUBJECT_DIR/experiments/jupyter_venv/bin/python" -m jupyterlab \
     --no-browser \
     --port="$JUPYTER_PORT" \
+    --ServerApp.port_retries=0 \
     --notebook-dir="$SUBJECT_DIR/experiments" \
-    --config=jupyter_config.py &
+    --config="$MATH_NOTES_EDITOR_DIR/jupyter_config.py" &
 JUPYTER_PID=$!
 
 cleanup() {
@@ -30,6 +44,19 @@ trap cleanup EXIT
 
 sleep 3
 
+if ! kill -0 "$FASTAPI_PID" 2>/dev/null; then
+    echo "FastAPI failed to start." >&2
+    wait "$FASTAPI_PID"
+    exit 1
+fi
+
+if ! kill -0 "$JUPYTER_PID" 2>/dev/null; then
+    echo "JupyterLab failed to start. Is port $JUPYTER_PORT already in use?" >&2
+    wait "$JUPYTER_PID"
+    cleanup
+    exit 1
+fi
+
 open http://127.0.0.1:8000
 
-wait "$FASTAPI_PID" "$JUPYTER_PID"%
+wait "$FASTAPI_PID" "$JUPYTER_PID"

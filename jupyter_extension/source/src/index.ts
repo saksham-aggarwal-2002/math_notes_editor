@@ -9,14 +9,14 @@ import {
 } from '@jupyterlab/notebook';
 
 
-interface MathAIMessage {
+interface MathNotesEditorMessage {
   type: string;
   text?: string;
   requestId?: string;
 }
 
 
-interface MathAIResponse {
+interface MathNotesEditorResponse {
   type: string;
   success: boolean;
   error?: string;
@@ -24,14 +24,14 @@ interface MathAIResponse {
 }
 
 
-const MATHAI_ORIGIN = 'http://127.0.0.1:8000';
+const MATH_NOTES_EDITOR_ORIGIN = 'http://127.0.0.1:8000';
 
 
-function sendToMathAI(response: MathAIResponse): void {
+function sendToMathNotesEditor(response: MathNotesEditorResponse): void {
 
   window.parent.postMessage(
     response,
-    MATHAI_ORIGIN
+    MATH_NOTES_EDITOR_ORIGIN
   );
 
 }
@@ -39,10 +39,10 @@ function sendToMathAI(response: MathAIResponse): void {
 
 const plugin: JupyterFrontEndPlugin<void> = {
 
-  id: 'mathai-jupyter-bridge',
+  id: 'math_notes_editor-jupyter-bridge',
 
   description:
-    'Bridge between MathAI and JupyterLab.',
+    'Bridge between math_notes_editor and JupyterLab.',
 
   autoStart: true,
 
@@ -56,7 +56,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
     console.log(
-      'MathAI Jupyter bridge loaded.'
+      'math_notes_editor Jupyter bridge loaded.'
     );
 
 
@@ -94,17 +94,113 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
           try {
 
+            /*
+             * Only open the parent prompt here.
+             * The placeholder cell is created later,
+             * after the user submits the prompt.
+             */
+
+            window.parent.postMessage(
+              {
+                type:
+                  'math_notes_editor-open-python-prompt',
+
+                requestId:
+                  crypto.randomUUID()
+              },
+              MATH_NOTES_EDITOR_ORIGIN
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              'math_notes_editor: could not open AI prompt:',
+              error
+            );
+
+          }
+
+        }
+
+      },
+      true
+    );
+
+
+    /*
+     * Listen for commands from math_notes_editor.
+     */
+
+    window.addEventListener(
+      'message',
+      event => {
+
+        if (
+          event.origin !== MATH_NOTES_EDITOR_ORIGIN
+        ) {
+
+          return;
+
+        }
+
+
+        const message =
+          event.data as MathNotesEditorMessage;
+
+
+        if (!message) {
+
+          return;
+
+        }
+
+
+        /*
+         * Create the placeholder cell only after
+         * the user submits the prompt.
+         */
+
+        if (
+          message.type ===
+          'math_notes_editor-create-placeholder'
+        ) {
+
+          const requestId =
+            message.requestId;
+
+
+          if (!requestId) {
+
+            sendToMathNotesEditor({
+
+              type:
+                'math_notes_editor-create-placeholder-result',
+
+              success:
+                false,
+
+              error:
+                'No request ID was provided.'
+
+            });
+
+            return;
+
+          }
+
+
+          try {
+
             const panel =
               tracker.currentWidget;
 
 
             if (!panel) {
 
-              console.error(
-                'MathAI: no notebook is open.'
+              throw new Error(
+                'No notebook is open.'
               );
-
-              return;
 
             }
 
@@ -119,31 +215,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
             if (!cell) {
 
-              console.error(
-                'MathAI: no active cell.'
+              throw new Error(
+                'No active cell.'
               );
-
-              return;
 
             }
 
 
-            const requestId =
-              crypto.randomUUID();
-
-
-            /*
-             * Make sure the current cell is active.
-             */
-
             notebook.activeCellIndex =
               notebook.widgets.indexOf(cell);
 
-
-            /*
-             * Immediately create a new cell below
-             * the current cell.
-             */
 
             NotebookActions.insertBelow(
               notebook
@@ -156,33 +237,17 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
             if (!placeholderCell) {
 
-              console.error(
-                'MathAI: could not create placeholder cell.'
+              throw new Error(
+                'Could not create placeholder cell.'
               );
-
-              return;
 
             }
 
-
-            /*
-             * Show the placeholder while the AI
-             * request is running.
-             */
 
             placeholderCell.model.sharedModel.setSource(
               '<!-- AI_GENERATING -->'
             );
 
-
-            /*
-             * Store the placeholder cell itself.
-             *
-             * This lets us replace exactly this cell
-             * when the AI response arrives, regardless
-             * of what happens to the notebook in the
-             * meantime.
-             */
 
             pendingCells.set(
               requestId,
@@ -190,61 +255,46 @@ const plugin: JupyterFrontEndPlugin<void> = {
             );
 
 
-            /*
-             * Tell the parent MathAI application
-             * to open the Python prompt.
-             */
+            sendToMathNotesEditor({
 
-            window.parent.postMessage(
-              {
-                type:
-                  'mathai-open-python-prompt',
+              type:
+                'math_notes_editor-create-placeholder-result',
 
-                requestId:
-                  requestId
-              },
-              MATHAI_ORIGIN
-            );
+              success:
+                true,
+
+              requestId:
+                requestId
+
+            });
 
 
           } catch (error) {
 
             console.error(
-              'MathAI: could not prepare AI request:',
+              'math_notes_editor placeholder creation failed:',
               error
             );
 
+
+            sendToMathNotesEditor({
+
+              type:
+                'math_notes_editor-create-placeholder-result',
+
+              success:
+                false,
+
+              requestId:
+                requestId,
+
+              error:
+                String(error)
+
+            });
+
           }
 
-        }
-
-      },
-      true
-    );
-
-
-    /*
-     * Listen for commands from MathAI.
-     */
-
-    window.addEventListener(
-      'message',
-      event => {
-
-        if (
-          event.origin !== MATHAI_ORIGIN
-        ) {
-
-          return;
-
-        }
-
-
-        const message =
-          event.data as MathAIMessage;
-
-
-        if (!message) {
 
           return;
 
@@ -258,7 +308,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
         if (
           message.type ===
-          'mathai-insert-text'
+          'math_notes_editor-insert-text'
         ) {
 
           const requestId =
@@ -267,10 +317,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
           if (!requestId) {
 
-            sendToMathAI({
+            sendToMathNotesEditor({
 
               type:
-                'mathai-insert-result',
+                'math_notes_editor-insert-result',
 
               success:
                 false,
@@ -298,10 +348,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
           if (!placeholderCell) {
 
-            sendToMathAI({
+            sendToMathNotesEditor({
 
               type:
-                'mathai-insert-result',
+                'math_notes_editor-insert-result',
 
               success:
                 false,
@@ -343,10 +393,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
             );
 
 
-            sendToMathAI({
+            sendToMathNotesEditor({
 
               type:
-                'mathai-insert-result',
+                'math_notes_editor-insert-result',
 
               success:
                 true,
@@ -360,15 +410,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
           } catch (error) {
 
             console.error(
-              'MathAI insertion failed:',
+              'math_notes_editor insertion failed:',
               error
             );
 
 
-            sendToMathAI({
+            sendToMathNotesEditor({
 
               type:
-                'mathai-insert-result',
+                'math_notes_editor-insert-result',
 
               success:
                 false,

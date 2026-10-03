@@ -1,22 +1,22 @@
 {
-  "name": "mathai-jupyter-bridge",
+  "name": "math_notes_editor-jupyter-bridge",
   "version": "0.1.0",
-  "description": "Bridge between MathAI and JupyterLab",
+  "description": "Bridge between math_notes_editor and JupyterLab",
   "keywords": [
     "jupyter",
     "jupyterlab"
   ],
   "license": "MIT",
-  "author": "MathAI",
+  "author": "math_notes_editor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc && jupyter-builder build --development True .",
-    "clean": "rm -rf lib mathai_jupyter_bridge/labextension"
+    "clean": "rm -rf lib math_notes_editor_jupyter_bridge/labextension"
   },
   "dependencies": {
-    "@jupyterlab/application": "^4.6.3",
-    "@jupyterlab/notebook": "^4.6.3"
+    "@jupyterlab/application": "^4.5.0",
+    "@jupyterlab/notebook": "^4.5.0"
   },
   "devDependencies": {
     "@jupyter/builder": "^1.0.0",
@@ -24,6 +24,6 @@
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "mathai_jupyter_bridge/labextension"
+    "outputDir": "math_notes_editor_jupyter_bridge/labextension"
   }
 }
