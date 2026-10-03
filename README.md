@@ -127,3 +127,12 @@ jupyter labextension list (to see if mathai-jupyter-bridge appears)
 Python requirements in venv
 Quarto requirement?
 
+# Executable
+~/Local_storage/mathAI/
+└── bin/
+    └── mathNotes          # source of truth, tracked by Git
+            ↑
+            │ symlink
+            │
+~/personal_binaries/
+└── mathNotes              # PATH entry
