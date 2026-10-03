@@ -3,7 +3,6 @@ guide.txt
 .DS_Store
 __pycache__/
 venv
-jupyter_venv
 jupyter_extension/node_modules/
 jupyter_extension/lib/
 jupyter_extension/mathai_jupyter_bridge/labextension/

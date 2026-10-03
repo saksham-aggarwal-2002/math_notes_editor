@@ -10,12 +10,14 @@ c.ServerApp.tornado_settings = {
     }
 }
 
-c.MappingKernelManager.default_kernel_name = "jupyter_venv"
+
 """
+OLD CODE
 The following code needs to be run to register a virtual environment as jupyter_venv:
 
 python -m pip install ipykernel
 python -m ipykernel install --user --name=jupyter_venv --display-name "Python (jupyter_venv)"
 
+# c.MappingKernelManager.default_kernel_name = "jupyter_venv"
 
 """
