@@ -43,6 +43,7 @@ def get_state():
     return {
         "subjects": subjects,
         "session": {"subject": subject, "note": settings.get("note")},
+        "positions": settings.positions(),
         "dataFolder": str(folder) if folder else None,
         "appDataDir": str(settings.APP_DATA_DIR),
         "hasOpenAIKey": bool(settings.openai_key()),
@@ -59,6 +60,19 @@ class Session(BaseModel):
 @app.put("/api/session")
 def put_session(session: Session):
     settings.save(subject=session.subject, note=session.note)
+
+    return {"success": True}
+
+
+class Position(BaseModel):
+
+    key: str
+    value: float | str
+
+
+@app.put("/api/positions")
+def put_position(position: Position):
+    settings.save_position(position.key, position.value)
 
     return {"success": True}
 
@@ -131,6 +145,11 @@ def get_preview(subject: str, note: str):
 @app.get("/api/subjects/{subject}/images")
 def get_images(subject: str):
     return library.list_images(root(), subject)
+
+
+@app.get("/api/subjects/{subject}/books")
+def get_books(subject: str):
+    return {"books": library.list_books(root(), subject)}
 
 
 @app.get("/files/{path:path}")

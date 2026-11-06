@@ -21,22 +21,22 @@
 
 <div id="toolbar">
     <button class="toggle active" id="notes-button">Notes</button>
-    <button class="toggle" id="python-button">Python</button>
-    <button class="toggle" id="settings-button">Settings</button>
+    <button class="toggle" id="python-button">Experiments</button>
+    <button class="toggle" id="books-button">Books</button>
 
     <div id="selectors">
         <label for="subject-select">Selected subject:</label>
         <select id="subject-select"></select>
     </div>
+
+    <button class="toggle" id="settings-button">Settings</button>
 </div>
 
 <div id="app">
 
     <div id="notes-view">
         <div id="editor-panel">
-            <div id="editor-header">
-                <select id="note-select" title="Note"></select>
-            </div>
+            <div id="note-tabs" class="file-tabs"></div>
             <textarea id="editor"></textarea>
         </div>
 
@@ -50,15 +50,17 @@
         <iframe id="jupyter-frame"></iframe>
     </div>
 
+    <div id="books-view">
+        <div id="book-tabs" class="file-tabs"></div>
+        <div id="books-message"></div>
+        <iframe id="book-frame"></iframe>
+    </div>
+
     <div id="settings-view">
         <h2>Data folder</h2>
         <div class="path" id="settings-data-folder"></div>
         <div class="hint">The folder that holds one folder per subject.</div>
         <button class="open-folder" data-folder="data">Open in Finder</button>
-
-        <h2 style="margin-top:30px">OpenAI key</h2>
-        <div id="settings-key"></div>
-        <div class="hint" id="settings-key-hint"></div>
 
         <h2 style="margin-top:30px">App data</h2>
         <div class="path" id="settings-app-data"></div>

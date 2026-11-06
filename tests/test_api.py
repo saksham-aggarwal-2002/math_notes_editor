@@ -123,3 +123,11 @@ def test_open_folder(client, monkeypatch, data_folder):
     assert client.post("/api/open-folder", json={"which": "app_data"}).status_code == 200
     assert client.post("/api/open-folder", json={"which": "etc"}).status_code == 400
     assert opened == [["open", str(data_folder)], ["open", str(settings.APP_DATA_DIR)]]
+
+
+def test_positions_are_remembered(client):
+    client.put("/api/positions", json={"key": "alg/notes/a.qmd", "value": 120.5})
+    client.put("/api/positions", json={"key": "alg/books/b.pdf", "value": "#page=3"})
+    client.put("/api/positions", json={"key": "alg/notes/a.qmd", "value": 7})
+
+    assert client.get("/api/state").json()["positions"] == {"alg/notes/a.qmd": 7, "alg/books/b.pdf": "#page=3"}

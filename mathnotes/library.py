@@ -3,6 +3,7 @@
     <root>/<subject>/notes/*.qmd          notes (rendered .html beside each)
     <root>/<subject>/notes/images/        pictures the notes use
     <root>/<subject>/styles/quarto.css
+    <root>/<subject>/books/               .pdf files
     <root>/<subject>/experiments/         .ipynb files, kernels/, jupyter_venv/
 """
 from pathlib import Path
@@ -65,6 +66,19 @@ def list_images(root, subject):
     ]
 
     return sorted(images, key=lambda image: image["modified"], reverse=True)
+
+
+def list_books(root, subject):
+    """File names of the PDFs in the subject's books/ folder, sorted (none if there is no folder)."""
+    books_dir = subject_dir(root, subject) / "books"
+
+    if not books_dir.is_dir():
+        return []
+
+    return sorted(
+        path.name for path in books_dir.iterdir()
+        if path.is_file() and path.suffix.lower() == ".pdf" and not path.name.startswith(".")
+    )
 
 
 def has_jupyter(root, subject):

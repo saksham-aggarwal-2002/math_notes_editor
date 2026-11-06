@@ -61,3 +61,13 @@ def test_safe_path_refuses_escapes_and_missing(data_folder):
     for bad in ["../data_secret", "alg/../../app_data/.env", "alg", "alg/notes/none.html", "/etc/passwd"]:
         with pytest.raises(library.NotFound):
             library.safe_path(data_folder, bad)
+
+
+def test_list_books_returns_only_pdfs(tmp_path):
+    (tmp_path / "alg" / "notes").mkdir(parents=True)
+    (tmp_path / "alg" / "books").mkdir()
+    (tmp_path / "alg" / "books" / "b.pdf").write_text("")
+    (tmp_path / "alg" / "books" / "A.PDF").write_text("")
+    (tmp_path / "alg" / "books" / "x.txt").write_text("")
+
+    assert library.list_books(tmp_path, "alg") == ["A.PDF", "b.pdf"]

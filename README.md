@@ -19,13 +19,14 @@ The app is a wrapper over the data folder, like Obsidian over a folder of text f
 └── <subject>/                 any folder with a notes/ folder is a subject
     ├── notes/                 *.qmd notes; Quarto writes the .html beside each
     │   └── images/            pictures for the image picker (Cmd+Shift+I)
+    ├── books/                 *.pdf files for the Books tab
     ├── styles/                whatever your notes link, e.g. css: ../styles/quarto.css
     └── experiments/           .ipynb notebooks
-        └── jupyter_venv/      this subject's Python environment (for the Python tab); the name is fixed
+        └── jupyter_venv/      this subject's Python environment (for the Experiments tab); the name is fixed
 ```
 
 - **Notes:** plain Quarto Markdown. Add a note by adding a `.qmd` file to `notes/`.
-- **Python tab:** needs a venv at exactly `experiments/jupyter_venv/` (the app looks for `experiments/jupyter_venv/bin/python`; any other name isn't found) with JupyterLab 4 and ipykernel. The app runs that venv's JupyterLab in `experiments/` and uses its default `python3` kernel, so notebooks should use "Python 3 (ipykernel)". Create it with:
+- **Experiments tab:** needs a venv at exactly `experiments/jupyter_venv/` (the app looks for `experiments/jupyter_venv/bin/python`; any other name isn't found) with JupyterLab 4 and ipykernel. The app runs that venv's JupyterLab in `experiments/` and uses its default `python3` kernel, so notebooks should use "Python 3 (ipykernel)". Create it with:
 
   ```bash
   python3 -m venv <subject>/experiments/jupyter_venv
@@ -50,9 +51,10 @@ The app is an alias build, so code changes need no rebuild; rerun `packaging/bui
 
 ## Using it
 
-- **Notes** tab: pick the subject (top right) and the note (bar above the editor). Saves automatically; Quarto re-renders after each save.
+- **Notes** tab: pick the subject (top bar) and the note (bar above the editor). Saves automatically; Quarto re-renders after each save.
 - `Cmd+Shift+L` AI text · `Cmd+Shift+P` placeholder box · `Cmd+Shift+O` reference · `Cmd+Shift+I` image.
-- **Python** tab: JupyterLab for the subject, started the first time you open it for that subject. `Cmd+Shift+L` there inserts generated code in a new cell below the active one.
+- **Books** tab: the PDFs in the subject's `books/` folder; switch between them with the dropdown.
+- **Experiments** tab (JupyterLab): JupyterLab for the subject, started the first time you open it for that subject. `Cmd+Shift+L` there inserts generated code in a new cell below the active one.
 
 ## How it fits together
 

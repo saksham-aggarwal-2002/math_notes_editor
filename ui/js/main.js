@@ -2,11 +2,13 @@
 import { api, subjectUrl } from "./api.js";
 import { state, $ } from "./state.js";
 import * as notes from "./notes.js";
+import { fillTabs } from "./tabs.js";
+import * as books from "./books.js";
 import * as python from "./python.js";
 import * as images from "./images.js";
 import * as settings from "./settings.js";
 
-const VIEWS = ["notes", "python", "settings"];
+const VIEWS = ["notes", "python", "books", "settings"];
 let view = "notes";
 
 function showView(name) {
@@ -14,12 +16,14 @@ function showView(name) {
 
     $("notes-view").style.display = name === "notes" ? "flex" : "none";
     $("python-view").style.display = name === "python" ? "block" : "none";
+    $("books-view").style.display = name === "books" ? "flex" : "none";
     $("settings-view").style.display = name === "settings" ? "block" : "none";
 
     for (const other of VIEWS) $(`${other}-button`).classList.toggle("active", other === name);
 
     if (name === "notes") notes.refresh();
     if (name === "python") python.show();
+    if (name === "books") books.show();
     if (name === "settings") settings.show();
 }
 
@@ -44,6 +48,9 @@ function fillSelect(id, options, selected, emptyText) {
     select.disabled = options.length === 0;
 }
 
+const showNoteTabs = () =>
+    fillTabs($("note-tabs"), state.notes, state.note, "No notes in this subject yet", attempt(selectNote));
+
 const remember = () => api("PUT", "/api/session", { subject: state.subject, note: state.note });
 
 async function selectNote(note) {
@@ -51,7 +58,7 @@ async function selectNote(note) {
 
     await notes.flushSave();
     state.note = note;
-    fillSelect("note-select", state.notes, note, "No notes in this subject yet");
+    showNoteTabs();
     await notes.loadNote();
     remember();
 }
@@ -61,16 +68,18 @@ async function selectSubject(subject, preferredNote) {
 
     state.subject = subject;
     python.reset();
+    books.reset();
 
     state.notes = subject === null ? [] : (await api("GET", subjectUrl(subject))).notes;
     state.note = state.notes.includes(preferredNote) ? preferredNote : (state.notes[0] ?? null);
 
-    fillSelect("note-select", state.notes, state.note, "No notes in this subject yet");
+    showNoteTabs();
 
     await notes.loadNote();
     remember();
 
     if (view === "python") python.show();
+    if (view === "books") books.show();
 }
 
 function attempt(action) {
@@ -79,9 +88,9 @@ function attempt(action) {
 
 $("notes-button").onclick = () => showView("notes");
 $("python-button").onclick = () => showView("python");
+$("books-button").onclick = () => showView("books");
 $("settings-button").onclick = () => showView("settings");
 $("subject-select").onchange = attempt((event) => selectSubject(event.target.value));
-$("note-select").onchange = attempt((event) => selectNote(event.target.value));
 
 document.addEventListener("keydown", (event) => {
     if (!event.metaKey || !event.shiftKey) return;
@@ -105,6 +114,7 @@ async function start() {
 
     const info = await api("GET", "/api/state");
     state.jupyterOrigin = info.jupyterOrigin;
+    state.positions = info.positions;
 
     fillSelect("subject-select", info.subjects, info.session.subject, "No subjects found");
 

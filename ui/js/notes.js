@@ -1,6 +1,6 @@
 // The Markdown editor: loading, folding, autosave, and the helpers that insert text.
 import { api, noteUrl, subjectUrl } from "./api.js";
-import { state, $ } from "./state.js";
+import { state, $, savePosition } from "./state.js";
 import { askForText, askForReference } from "./prompt.js";
 import * as preview from "./preview.js";
 
@@ -11,6 +11,10 @@ let editor;
 let saveTimer = null;
 let pendingSave = null;   // {subject, note, content} waiting for the timer
 let loading = false;
+let scrollTimer = null;
+
+const scrollKey = () => `${state.subject}/notes/${state.note}`;
+const restoreScroll = () => editor.scrollTo(null, state.positions[scrollKey()] ?? 0);
 
 /* Folding: ::: boxes and headings. */
 CodeMirror.registerHelper("fold", "quarto", (cm, start) => {
@@ -60,12 +64,25 @@ export function initEditor() {
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     });
 
+    editor.on("scroll", () => {
+        if (loading || state.note === null) return;
+
+        const key = scrollKey();
+        const top = editor.getScrollInfo().top;
+
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => savePosition(key, top), 300);
+    });
+
     editor.on("change", () => {
         if (!loading) scheduleSave();
     });
 }
 
-export const refresh = () => editor.refresh();
+export function refresh() {
+    editor.refresh();
+    if (state.note !== null) restoreScroll();
+}
 export const focus = () => editor.focus();
 
 export function insertAtCursor(text) {
@@ -95,6 +112,8 @@ export async function loadNote() {
         for (let i = 0; i < editor.lineCount(); i++) {
             if (/^#\s+/.test(editor.getLine(i))) editor.foldCode(CodeMirror.Pos(i, 0));
         }
+
+        restoreScroll();
     } finally {
         loading = false;
     }

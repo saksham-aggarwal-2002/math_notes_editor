@@ -1,4 +1,4 @@
-// The Settings tab: where the data lives, whether the AI key is set.
+// The Settings tab: where the data lives.
 import { api } from "./api.js";
 import { $ } from "./state.js";
 
@@ -7,10 +7,6 @@ export async function show() {
 
     $("settings-data-folder").textContent = info.dataFolder;
     $("settings-app-data").textContent = info.appDataDir;
-    $("settings-key").textContent = info.hasOpenAIKey ? "Set" : "Not set";
-    $("settings-key-hint").textContent = info.hasOpenAIKey
-        ? ""
-        : `Add OPENAI_API_KEY=... to ${info.appDataDir}/.env`;
 }
 
 for (const button of document.querySelectorAll(".open-folder")) {

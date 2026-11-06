@@ -1,6 +1,6 @@
 """Per-machine settings, kept in app_data/ (gitignored, so a fresh clone has none):
 
-    config.json   {"data_folder": "/path/to/subjects", "subject": ..., "note": ...}
+    config.json   {"data_folder": "/path/to/subjects", "subject": ..., "note": ..., "positions": {...}}
     .env          OPENAI_API_KEY=...
     jupyter.log   output of the running JupyterLab
 
@@ -60,3 +60,12 @@ def data_folder_is_usable():
 def openai_key():
     """The key from app_data/.env (read each time, so editing it needs no restart)."""
     return dotenv_values(ENV_FILE).get("OPENAI_API_KEY") or os.environ.get("OPENAI_API_KEY")
+
+
+def positions():
+    """Where you were in each note and book: {"<subject>/notes/<file>": scroll, ...}."""
+    return get("positions", {})
+
+
+def save_position(key, value):
+    save(positions={**positions(), key: value})

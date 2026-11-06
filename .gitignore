@@ -8,6 +8,7 @@ jupyter_extension/source/math_notes_editor_jupyter_bridge/labextension/
 jupyter_extension/source/tsconfig.tsbuildinfo
 jupyter_extension/build/
 build/
+!ui/vendor/pdfjs/build/
 dist/
 build.log
 packaging/MathNotes.png
