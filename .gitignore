@@ -1,4 +1,3 @@
-.env
 guide.txt
 .DS_Store
 __pycache__/
@@ -8,3 +7,11 @@ jupyter_extension/source/lib/
 jupyter_extension/source/math_notes_editor_jupyter_bridge/labextension/
 jupyter_extension/source/tsconfig.tsbuildinfo
 jupyter_extension/build/
+build/
+dist/
+build.log
+packaging/MathNotes.png
+
+# Per-machine state: app_data/ holds the OpenAI key (.env) and the path to your
+# data folder (config.json). Your notes live in that folder, outside this one.
+app_data/

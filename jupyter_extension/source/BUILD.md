@@ -54,16 +54,13 @@ jupyter_extension/build/jupyter_data/labextensions/math_notes_editor-jupyter-bri
 
 Any notes/Jupyter environment can use that single built copy as long as JupyterLab is launched with this shared Jupyter data directory in `JUPYTER_PATH`.
 
-Example runtime launch setup:
+The app sets this when it starts a subject's JupyterLab (`mathnotes/jupyter.py`):
 
 ```bash
-export JUPYTER_PATH="$MATH_NOTES_EDITOR_DIR/jupyter_extension/build/jupyter_data:$SUBJECT_DIR/experiments"
+export JUPYTER_PATH="<repo>/jupyter_extension/build/jupyter_data"
 ```
 
-Here:
-
-- `$MATH_NOTES_EDITOR_DIR/jupyter_extension/build/jupyter_data` provides the shared app extension.
-- `$SUBJECT_DIR/experiments` provides subject-specific kernels and notebook data.
+This directory provides the shared app extension. Kernels are not registered by the app: each subject uses its own venv's default `python3` kernel.
 
 This means extension updates require only one rebuild in the app repo.
 
@@ -110,11 +107,7 @@ The script will:
 
 The user's notes/Jupyter environment does not need to build the extension.
 
-It only needs to launch JupyterLab with this shared generated Jupyter data directory in `JUPYTER_PATH`:
-
-```bash
-export JUPYTER_PATH="$MATH_NOTES_EDITOR_DIR/jupyter_extension/build/jupyter_data:$SUBJECT_DIR/experiments"
-```
+The app launches JupyterLab with this shared generated Jupyter data directory in `JUPYTER_PATH` (see above).
 
 ## Important compatibility note
 

@@ -73,8 +73,6 @@ Shared built extension location:
 
   $SHARED_LABEXTENSION_DIR
 
-When launching JupyterLab from a notes environment, include this shared data directory in JUPYTER_PATH before the notes data directory:
-
-  export JUPYTER_PATH="$JUPYTER_DATA_DIR:\$SUBJECT_DIR/experiments"
+The app puts this directory on JUPYTER_PATH when it starts a subject's JupyterLab (mathnotes/jupyter.py).
 
 EOF

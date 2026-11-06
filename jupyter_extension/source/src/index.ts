@@ -106,7 +106,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
                   'math_notes_editor-open-python-prompt',
 
                 requestId:
-                  crypto.randomUUID()
+                  crypto.randomUUID(),
+
+                /*
+                 * Path of the open notebook, relative to
+                 * the Jupyter root (the subject's experiments/).
+                 */
+
+                notebookPath:
+                  tracker.currentWidget?.context.path ?? null
               },
               MATH_NOTES_EDITOR_ORIGIN
             );
