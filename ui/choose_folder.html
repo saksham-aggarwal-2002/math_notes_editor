@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Select data folder</title>
+  <style>
+    :root { --bg: #ffffff; --fg: #111111; --muted: #8a8a8a; --line: #d4d4d4; --hover: #f5f5f5; --accent: #2f6fed; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #161616; --fg: #ececec; --muted: #7a7a7a; --line: #3a3a3a; --hover: #1f1f1f; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 36px 40px; background: var(--bg); color: var(--fg);
+           font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; }
+    h1 { margin: 0 0 22px; font-size: 22px; font-weight: 600; }
+    /* Looks like a search bar; clicking it opens Finder's folder picker. */
+    #picker { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; border: 1px solid var(--line);
+              border-radius: 8px; background: var(--bg); color: var(--muted); font: inherit; text-align: left; cursor: pointer; }
+    #picker:hover { background: var(--hover); }
+    #picker.chosen { color: var(--fg); }
+    #picker svg { flex-shrink: 0; }
+    #picker span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; flex: 1; }
+    #error { min-height: 20px; margin: 10px 0 0; color: #d4553a; font-size: 13px; }
+    #open { margin-top: 12px; padding: 8px 20px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; font-weight: 500; cursor: pointer; }
+    #open:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <h1>Select data folder</h1>
+  <button id="picker" type="button">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>
+    <span id="path">Choose your Math Notes data folder…</span>
+  </button>
+  <div id="error"></div>
+  <button id="open" type="button" disabled>Open</button>
+
+  <script>
+    let chosen = null;
+    const api = () => window.pywebview.api;
+    const ready = new Promise((resolve) => {
+      if (window.pywebview && window.pywebview.api) resolve();
+      else window.addEventListener("pywebviewready", resolve, { once: true });
+    });
+    const $ = (id) => document.getElementById(id);
+
+    $("picker").onclick = async () => {
+      await ready;
+      const path = await api().pick();
+      if (!path) return;
+      chosen = path;
+      $("path").textContent = path;
+      $("picker").classList.add("chosen");
+      $("open").disabled = false;
+      $("error").textContent = "";
+    };
+
+    $("open").onclick = async () => {
+      $("open").disabled = true;
+      const error = await api().open(chosen);  // opens the main window and closes this one on success
+      if (error) { $("error").textContent = error; $("open").disabled = false; }
+    };
+  </script>
+</body>
+</html>
