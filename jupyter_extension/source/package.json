@@ -12,7 +12,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc && jupyter-builder build --development True .",
-    "clean": "rm -rf lib math_notes_editor_jupyter_bridge/labextension"
+    "clean": "rm -rf lib labextension"
   },
   "dependencies": {
     "@jupyterlab/application": "^4.5.0",
@@ -24,6 +24,6 @@
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "math_notes_editor_jupyter_bridge/labextension"
+    "outputDir": "labextension"
   }
 }

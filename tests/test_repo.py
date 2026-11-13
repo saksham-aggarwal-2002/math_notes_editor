@@ -1,5 +1,5 @@
 """Guards against machine-specific things creeping back into the committed code."""
-from pathlib import Path
+import re
 
 from mathnotes import settings
 
@@ -31,7 +31,5 @@ def test_ui_has_no_external_dependencies():
 
 def test_every_page_script_exists():
     index = (settings.PROJECT_DIR / "ui" / "index.html").read_text()
-    import re
-
     for reference in re.findall(r'(?:src|href)="(/[^"]+)"', index):
         assert (settings.PROJECT_DIR / "ui" / reference.lstrip("/")).is_file(), reference

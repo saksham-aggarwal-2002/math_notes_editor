@@ -5,7 +5,7 @@ export const state = {
     note: null,
     notes: [],
     jupyterOrigin: null,
-    positions: {},   // scroll positions by key, mirrored in app_data/config.json
+    positions: {},   // scroll positions by key, mirrored in app_data/state.json
 };
 
 export const $ = (id) => document.getElementById(id);

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 EXTENSION_NAME="math_notes_editor-jupyter-bridge"
-PACKAGE_LABEXTENSION_DIR="math_notes_editor_jupyter_bridge/labextension"
+PACKAGE_LABEXTENSION_DIR="labextension"
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXTENSION_ROOT="$(cd "$SOURCE_DIR/.." && pwd)"
 PROJECT_ROOT="$(cd "$EXTENSION_ROOT/.." && pwd)"

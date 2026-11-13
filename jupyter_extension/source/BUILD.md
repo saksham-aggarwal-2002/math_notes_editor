@@ -20,12 +20,9 @@ jupyter_extension/
 │   ├── requirements-build.txt
 │   ├── package.json
 │   ├── package-lock.json
-│   ├── pyproject.toml
 │   ├── tsconfig.json
-│   ├── src/
-│   │   └── index.ts
-│   └── math_notes_editor_jupyter_bridge/
-│       └── __init__.py
+│   └── src/
+│       └── index.ts
 └── build/                          # generated, not committed
     └── jupyter_data/
         └── labextensions/
@@ -39,7 +36,7 @@ These files/directories are generated and should not be committed:
 ```text
 jupyter_extension/source/node_modules/
 jupyter_extension/source/lib/
-jupyter_extension/source/math_notes_editor_jupyter_bridge/labextension/
+jupyter_extension/source/labextension/
 jupyter_extension/source/tsconfig.tsbuildinfo
 jupyter_extension/build/
 ```
@@ -78,7 +75,7 @@ By default, the script uses the app/project Python environment:
 ./venv/bin/python
 ```
 
-That environment is used only to install Python build tools such as `hatch-jupyter-builder`. It is not the user's notes/Jupyter runtime environment.
+That environment is used only to install the Python build tool `jupyter-builder`. It is not the user's notes/Jupyter runtime environment.
 
 If you want to use a different build Python, pass `BUILD_PYTHON`:
 

@@ -7,7 +7,7 @@ A personal Mac app for studying maths: a Quarto note editor with live preview, a
 | | What | In git? |
 |---|---|---|
 | **This repo** | the app's code | yes |
-| **`app_data/`** (inside the repo folder) | what the app needs on this computer: `config.json` (where your data folder is, the subject and note you were last on), `.env` (`OPENAI_API_KEY=...`), `jupyter.log` | no |
+| **`app_data/`** (inside the repo folder) | what the app needs on this computer: `config.json` (where your data folder is), `state.json` (the subject, note and scroll positions you were last on), `.env` (`OPENAI_API_KEY=...`), `jupyter.log` | no |
 | **The data folder** (anywhere else) | your content | no |
 
 The app is a wrapper over the data folder, like Obsidian over a folder of text files. It never needs anything from the data folder beyond the layout below, and everything in it opens without the app.
@@ -64,7 +64,7 @@ main.py                 asks for the data folder if needed, starts the server (p
 mathnotes/
   api.py                the web API (stateless: every request names its subject and note) + serves ui/
   library.py            reads the data folder: subjects, notes, images, safe paths
-  settings.py           app_data/: config.json, .env, ports
+  settings.py           app_data/: config.json, state.json, .env, ports
   render.py             Quarto, one background worker, latest save wins
   jupyter.py            one JupyterLab (port 8890) from the subject's own jupyter_venv, default kernel
   ai.py                 the OpenAI calls; prompts are in prompts/

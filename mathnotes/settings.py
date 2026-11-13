@@ -63,12 +63,12 @@ def save(**values):
 
     Saves arrive from parallel requests, hence the lock."""
     with _write_lock:
-        for file, keys in [(CONFIG_FILE, CONFIG_KEYS), (STATE_FILE, None)]:
-            mine = {k: v for k, v in values.items() if (k in CONFIG_KEYS) == (keys is not None)}
+        config = {k: v for k, v in values.items() if k in CONFIG_KEYS}
+        state = {k: v for k, v in values.items() if k not in CONFIG_KEYS}
 
+        for file, mine in [(CONFIG_FILE, config), (STATE_FILE, state)]:
             if mine:
-                first = next(iter(mine))
-                _write(file, {**_read(first), **mine})
+                _write(file, {**_load(file), **mine})
 
 
 def data_folder():

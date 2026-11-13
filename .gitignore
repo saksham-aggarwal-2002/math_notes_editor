@@ -4,7 +4,7 @@ __pycache__/
 venv
 jupyter_extension/source/node_modules/
 jupyter_extension/source/lib/
-jupyter_extension/source/math_notes_editor_jupyter_bridge/labextension/
+jupyter_extension/source/labextension/
 jupyter_extension/source/tsconfig.tsbuildinfo
 jupyter_extension/build/
 build/
