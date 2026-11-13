@@ -90,6 +90,28 @@ $("notes-button").onclick = () => showView("notes");
 $("python-button").onclick = () => showView("python");
 $("books-button").onclick = () => showView("books");
 $("settings-button").onclick = () => showView("settings");
+for (const toggle of document.querySelectorAll(".collapse-toggle")) {
+    toggle.onclick = () => document.body.classList.toggle("side-collapsed");
+}
+
+// Drag the divider to resize the editor against the preview (pointer capture keeps the iframe from stealing the drag).
+const MIN_PANEL = 200;
+$("divider").onpointerdown = (event) => {
+    const divider = event.target;
+    const editor = $("editor-panel");
+    const left = editor.getBoundingClientRect().left;
+    const room = $("notes-view").getBoundingClientRect().right - left - divider.offsetWidth;
+
+    divider.setPointerCapture(event.pointerId);
+    divider.onpointermove = (move) => {
+        editor.style.flexBasis = `${Math.min(Math.max(move.clientX - left, MIN_PANEL), room - MIN_PANEL)}px`;
+    };
+    divider.onpointerup = () => {
+        divider.onpointermove = null;
+        divider.onpointerup = null;
+    };
+};
+
 $("subject-select").onchange = attempt((event) => selectSubject(event.target.value));
 
 function switchView(step) {

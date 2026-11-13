@@ -130,33 +130,80 @@ body{
 }
 
 #editor-panel{
-    width:50%;
+    flex:0 0 50%;
+    min-width:200px;
     height:100%;
     display:flex;
     flex-direction:column;
-    border-right:1px solid #ddd
+}
+
+#divider{
+    flex:0 0 5px;
+    background:#ddd;
+    cursor:col-resize;
+}
+
+#divider:hover{
+    background:#bbb;
+}
+
+.side-panel{
+    display:flex;
+    flex-direction:column;
+    width:130px;
+    border-right:1px solid #ddd;
+    flex-shrink:0;
+}
+
+body.side-collapsed .side-panel{
+    width:24px;
+}
+
+body.side-collapsed .file-tabs{
+    display:none;
+}
+
+.collapse-toggle{
+    align-self:flex-end;
+    width:24px;
+    height:24px;
+    border:none;
+    background:transparent;
+    color:#888;
+    cursor:pointer;
+    font-size:14px;
+}
+
+.collapse-toggle:hover{
+    color:#333;
+}
+
+.collapse-toggle::before{
+    content:"‹";
+}
+
+body.side-collapsed .collapse-toggle::before{
+    content:"›";
 }
 
 .file-tabs{
     display:flex;
+    flex-direction:column;
     gap:2px;
-    padding:4px 8px 0;
-    border-bottom:1px solid #ddd;
-    overflow-x:auto;
-    flex-shrink:0;
+    padding:2px 4px 6px;
+    overflow-y:auto;
 }
 
 .file-tab{
-    padding:6px 12px;
+    padding:6px 8px;
     border:1px solid transparent;
-    border-bottom:none;
-    border-radius:6px 6px 0 0;
+    border-radius:6px;
     background:transparent;
     color:#666;
     cursor:pointer;
-    font-size:14px;
+    font-size:13px;
+    text-align:left;
     white-space:nowrap;
-    max-width:220px;
     overflow:hidden;
     text-overflow:ellipsis;
 }
@@ -171,13 +218,12 @@ body{
     border-color:#d2d2d2;
     color:#111;
     font-weight:500;
-    margin-bottom:-1px;
 }
 
 .file-tabs-empty{
-    padding:6px 12px;
+    padding:6px 8px;
     color:#888;
-    font-size:14px;
+    font-size:13px;
 }
 
 #editor{
@@ -200,7 +246,8 @@ body{
 }
 
 #quarto-panel{
-    width:50%;
+    flex:1;
+    min-width:200px;
     height:100%
 }
 
@@ -353,13 +400,13 @@ body{
 
 #books-view{
     display:none;
-    flex-direction:column;
     width:100%;
     height:100%;
 }
 
 #books-message{
     display:none;
+    flex:1;
     padding:30px;
     color:#666;
 }

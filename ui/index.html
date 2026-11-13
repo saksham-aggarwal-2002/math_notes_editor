@@ -35,10 +35,16 @@
 <div id="app">
 
     <div id="notes-view">
-        <div id="editor-panel">
+        <div class="side-panel">
+            <button class="collapse-toggle" title="Collapse or expand the side bar"></button>
             <div id="note-tabs" class="file-tabs"></div>
+        </div>
+
+        <div id="editor-panel">
             <textarea id="editor"></textarea>
         </div>
+
+        <div id="divider" title="Drag to resize"></div>
 
         <div id="quarto-panel">
             <iframe id="quarto-frame"></iframe>
@@ -51,7 +57,10 @@
     </div>
 
     <div id="books-view">
-        <div id="book-tabs" class="file-tabs"></div>
+        <div class="side-panel">
+            <button class="collapse-toggle" title="Collapse or expand the side bar"></button>
+            <div id="book-tabs" class="file-tabs"></div>
+        </div>
         <div id="books-message"></div>
         <iframe id="book-frame"></iframe>
     </div>

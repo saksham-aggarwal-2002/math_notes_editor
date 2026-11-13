@@ -66,9 +66,9 @@ The app is an alias build, so code changes need no rebuild; rerun `packaging/bui
 
 ## Using it
 
-- **Notes** tab: pick the subject (top bar) and the note (bar above the editor). Saves automatically; Quarto re-renders after each save.
+- **Notes** tab: pick the subject (top bar) and the note (thin strip on the left; the arrow at its top collapses it, and the shortcuts keep working). Drag the divider between the editor and the preview to resize them. Saves automatically; Quarto re-renders after each save.
 - `Cmd+Shift+L` AI text · `Cmd+Shift+P` placeholder box · `Cmd+Shift+O` reference · `Cmd+Shift+I` image.
-- **Books** tab: the PDFs in the subject's `books/` folder; switch between them with the dropdown.
+- **Books** tab: the PDFs in the subject's `books/` folder; switch between them in the strip on the left (collapsible like the notes one).
 - **Experiments** tab (JupyterLab): JupyterLab for the subject, started the first time you open it for that subject. `Cmd+Shift+L` there inserts generated code in a new cell below the active one.
 
 ## How it fits together
