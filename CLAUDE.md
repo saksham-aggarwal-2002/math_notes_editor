@@ -5,3 +5,5 @@
   delete the old way. If an existing install needs fixing, tell the user what to do by hand
   (e.g. re-pick the data folder) instead of carrying code for it.
 - Keep it simple and small: the simplest design that works, readable top to bottom.
+- **Documentation is kept up to date with every change.** README, BUILD.md, docstrings and comments
+  must describe the code as it is now; change them in the same edit as the code, never later.

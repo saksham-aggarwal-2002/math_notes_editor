@@ -33,8 +33,23 @@ The app is a wrapper over the data folder, like Obsidian over a folder of text f
   <subject>/experiments/jupyter_venv/bin/pip install "jupyterlab>=4,<5" ipykernel   # plus the packages you use
   ```
 
-  (JupyterLab 4 because the app's extension is built for it.) A virtualenv has absolute paths inside it, so recreate it rather than copying it to another computer. Without it, only the Python tab is unavailable.
+  (JupyterLab 4 because the app's extension is built for it.) A virtualenv has absolute paths inside it, so recreate it rather than copying it to another computer. Without it, only the Experiments tab is unavailable.
+- Notebooks may sit in subfolders of `experiments/`. The AI finds the notebook you have open in Jupyter; when none is named, it only works if there is exactly one `.ipynb` directly in `experiments/`.
+- Hidden files (and hidden folders in the data folder) are ignored.
 - To open the notebooks without the app: run `experiments/jupyter_venv/bin/jupyter lab` in `experiments/`.
+
+## `app_data/`
+
+Per-machine settings in the repo folder, gitignored, so a fresh clone has none. The app creates it when needed.
+
+| File | What |
+|---|---|
+| `config.json` | `{"data_folder": "..."}`, set from the folder picker |
+| `state.json` | the subject, note and scroll positions you were last on; safe to delete (it only resets where you were) |
+| `.env` | `OPENAI_API_KEY=...`; a real `OPENAI_API_KEY` environment variable also works. Read on every request, so no restart is needed after editing |
+| `jupyter.log` | output of the running JupyterLab, for when the Experiments tab fails to start |
+
+The app uses fixed ports: 8000 for itself and 8890 for JupyterLab. If another program holds one, the app (or the Experiments tab) won't start.
 
 ## Setting up on a new Mac
 

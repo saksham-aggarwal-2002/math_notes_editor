@@ -4,7 +4,7 @@
     <root>/<subject>/notes/images/        pictures the notes use
     <root>/<subject>/styles/quarto.css
     <root>/<subject>/books/               .pdf files
-    <root>/<subject>/experiments/         .ipynb files, kernels/, jupyter_venv/
+    <root>/<subject>/experiments/         .ipynb files, jupyter_venv/
 """
 from pathlib import Path
 
