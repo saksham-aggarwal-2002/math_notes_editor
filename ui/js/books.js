@@ -8,6 +8,7 @@ const frame = $("book-frame");
 const message = $("books-message");
 
 let shownFor = null;
+let current = { book: null, books: [] };
 
 function showMessage(text) {
     frame.style.display = "none";
@@ -20,6 +21,18 @@ const bookKey = (book) => `${state.subject}/books/${book}`;
 /** Remember the page and zoom of the PDF viewer as you scroll, keyed by the book it shows. */
 function trackPosition(key) {
     frame.onload = async () => {
+        // Keys pressed inside the PDF viewer never reach the page, so pass the tab shortcut on.
+        // Capture phase, so the viewer's own key handling can't swallow it first.
+        frame.contentWindow.addEventListener("keydown", (event) => {
+            if (event.altKey && event.ctrlKey && event.code.startsWith("Arrow")) {
+                event.preventDefault();
+                event.stopPropagation();
+                document.dispatchEvent(new KeyboardEvent("keydown", {
+                    code: event.code, key: event.key, altKey: true, ctrlKey: true,
+                }));
+            }
+        }, true);
+
         const app = frame.contentWindow.PDFViewerApplication;
 
         if (!app) return;
@@ -37,6 +50,7 @@ function open(book, books) {
     const file = `/files/${encodeURIComponent(state.subject)}/books/${encodeURIComponent(book)}`;
     const where = state.positions[key] ?? "";   // like "#page=12&zoom=auto,-1,300"
 
+    current = { book, books };
     fillTabs(tabs, books, book, "", (name) => open(name, books));
     savePosition(`${state.subject}/last-book`, book);
 
@@ -69,9 +83,17 @@ export async function show() {
     open(books.includes(last) ? last : books[0], books);
 }
 
+/** Switch to the next (1) or previous (-1) book, wrapping around. */
+export function step(delta) {
+    const { book, books } = current;
+
+    if (books.length > 1) open(books[(books.indexOf(book) + delta + books.length) % books.length], books);
+}
+
 /** Call when the subject changes: the list is reloaded on next visit. */
 export function reset() {
     shownFor = null;
+    current = { book: null, books: [] };
     frame.dataset.key = "";
     frame.src = "about:blank";
 }

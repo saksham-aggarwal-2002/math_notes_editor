@@ -137,6 +137,42 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
 
     /*
+     * Ctrl+Option+Left/Right switches the app's tabs, so
+     * forward it to the parent while Jupyter has focus.
+     */
+
+    document.addEventListener(
+      'keydown',
+      event => {
+
+        if (
+          event.altKey &&
+          event.ctrlKey &&
+          !event.metaKey &&
+          !event.shiftKey &&
+          (event.key === 'ArrowLeft' || event.key === 'ArrowRight')
+        ) {
+
+          event.preventDefault();
+
+          event.stopPropagation();
+
+          window.parent.postMessage(
+            {
+              type: 'math_notes_editor-switch-tab',
+              step: event.key === 'ArrowLeft' ? -1 : 1
+            },
+            MATH_NOTES_EDITOR_ORIGIN
+          );
+
+        }
+
+      },
+      true
+    );
+
+
+    /*
      * Listen for commands from math_notes_editor.
      */
 

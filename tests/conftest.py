@@ -27,6 +27,7 @@ def data_folder(tmp_path, monkeypatch):
     app_data = tmp_path / "app_data"
     monkeypatch.setattr(settings, "APP_DATA_DIR", app_data)
     monkeypatch.setattr(settings, "CONFIG_FILE", app_data / "config.json")
+    monkeypatch.setattr(settings, "STATE_FILE", app_data / "state.json")
     monkeypatch.setattr(settings, "ENV_FILE", app_data / ".env")
     monkeypatch.setattr(settings, "JUPYTER_LOG", app_data / "jupyter.log")
     monkeypatch.setenv("MATH_EDITOR_DATA", str(root))

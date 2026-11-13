@@ -40,3 +40,33 @@ def test_key_read_from_env_file_each_time(data_folder):
     assert settings.openai_key() == "abc"
     settings.ENV_FILE.write_text("OPENAI_API_KEY=def\n")
     assert settings.openai_key() == "def"
+
+
+def test_parallel_saves_never_lose_the_folder(tmp_path, monkeypatch, data_folder):
+    import threading
+
+    monkeypatch.delenv("MATH_EDITOR_DATA")
+    settings.save(data_folder=str(tmp_path))
+
+    def save_many(n):
+        for i in range(100):
+            settings.save(**{f"key{n}": i})
+
+    threads = [threading.Thread(target=save_many, args=(n,)) for n in range(8)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+
+    assert settings.data_folder() == tmp_path
+
+
+def test_session_and_folder_live_in_separate_files(tmp_path, monkeypatch, data_folder):
+    monkeypatch.delenv("MATH_EDITOR_DATA")
+    settings.save(data_folder=str(tmp_path), subject="alg")
+
+    assert settings.CONFIG_FILE.read_text().count("alg") == 0
+    assert settings.STATE_FILE.read_text().count(str(tmp_path)) == 0
+
+    settings.STATE_FILE.write_text("garbage")   # a broken state file loses the place, not the folder
+    assert settings.get("subject") is None
+    assert settings.data_folder() == tmp_path
+

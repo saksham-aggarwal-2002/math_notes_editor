@@ -92,7 +92,40 @@ $("books-button").onclick = () => showView("books");
 $("settings-button").onclick = () => showView("settings");
 $("subject-select").onchange = attempt((event) => selectSubject(event.target.value));
 
+function switchView(step) {
+    showView(VIEWS[(VIEWS.indexOf(view) + step + VIEWS.length) % VIEWS.length]);
+}
+
+// Ctrl+Option+Left/Right pressed inside Jupyter is forwarded by the extension.
+window.addEventListener("message", (event) => {
+    if (event.origin === state.jupyterOrigin && event.data?.type === "math_notes_editor-switch-tab") {
+        switchView(event.data.step);
+    }
+});
+
+function switchTab(delta) {
+    if (view === "books") return books.step(delta);
+
+    const { notes: names, note } = state;
+
+    if (view === "notes" && names.length > 1) {
+        attempt(selectNote)(names[(names.indexOf(note) + delta + names.length) % names.length]);
+    }
+}
+
 document.addEventListener("keydown", (event) => {
+    if (event.altKey && event.ctrlKey && !event.metaKey && !event.shiftKey) {
+        const step = { ArrowLeft: -1, ArrowRight: 1 }[event.code];   // between Notes, Experiments, ...
+        const delta = { ArrowUp: -1, ArrowDown: 1 }[event.code];     // between notes / books
+
+        if (step || delta) {
+            event.preventDefault();
+            if (step) switchView(step);
+            else switchTab(delta);
+        }
+        return;
+    }
+
     if (!event.metaKey || !event.shiftKey) return;
 
     const key = event.key.toLowerCase();
@@ -107,7 +140,7 @@ document.addEventListener("keydown", (event) => {
         event.preventDefault();
         actions[key]();
     }
-});
+}, true);
 
 async function start() {
     notes.initEditor();
